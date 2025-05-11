@@ -119,10 +119,14 @@
             window.location.href = "quiz.html";
         });
     </script>
-    <script src="sketch.js" type="module"></script>
-<script>
-  window.predictImage = window.predictImage;
-  window.classifyVideo = window.classifyVideo;
-</script>
+
+    <script type="module" src="sketch.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        // Bảo đảm các hàm dưới sẵn sàng
+        window.predictImage = window.predictImage;
+        window.classifyVideo = window.classifyVideo;
+      });
+    </script>
 </body>
 </html>
