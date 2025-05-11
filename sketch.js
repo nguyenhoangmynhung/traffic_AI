@@ -110,35 +110,42 @@ function playAudio(text) {
     window.speechSynthesis.speak(speech);
 }
 
-// Hiển thị thông tin biển báo từ API
-function hienThiThongTin(ma, elementId) {
-    const div = document.getElementById(elementId);
-    div.style.display = "block"; // Hiện vùng thông tin
+// Hiển thị thông tin biển báo
+async function hienThiThongTin(ma, mode) {
+    const infoBox = document.getElementById(`info${mode}`);
+    infoBox.style.display = "block";
 
-    fetch(`http://localhost:3000/api/bien-bao/${ma}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                div.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
-            } else {
-                // Gán dữ liệu vào từng vùng tương ứng
-                if (elementId === "infoCamera") {
-                    document.getElementById("tenBienCam").innerText = data.TenBien;
-                    document.getElementById("moTaCam").innerText = data.MoTa;
-                    document.getElementById("mucPhatCam").innerText = data.MucPhat;
-                    document.getElementById("tenLoaiCam").innerText = data.TenLoai;
-                    } else {
-                    document.getElementById("tenBienImg").innerText = data.TenBien;
-                    document.getElementById("moTaImg").innerText = data.MoTa;
-                    document.getElementById("mucPhatImg").innerText = data.MucPhat;
-                    document.getElementById("tenLoaiImg").innerText = data.TenLoai;
-                       }
-            }
-        })
-        .catch(err => {
-            div.innerHTML = `<p style="color:red;">❌ Không thể kết nối tới server</p>`;
-            console.error("❌ Lỗi API:", err);
-        });
+    // Reset nội dung
+    infoBox.innerHTML = `
+        <h4>📘 Thông tin biển báo:</h4>
+        <p><strong>Tên biển:</strong> <span id="tenBien${mode}"></span></p>
+        <p><strong>Mô tả:</strong> <span id="moTa${mode}"></span></p>
+        <p><strong>Mức phạt:</strong> <span id="mucPhat${mode}"></span></p>
+        <p><strong>Loại biển:</strong> <span id="tenLoai${mode}"></span></p>
+    `;
+
+    try {
+        const bienRef = doc(db, "BienBao", ma);
+        const bienSnap = await getDoc(bienRef);
+
+        if (!bienSnap.exists()) {
+            infoBox.innerHTML = `<p style="color:red;">❌ Không tìm thấy biển báo: ${ma}</p>`;
+            return;
+        }
+
+        const bien = bienSnap.data();
+        const loaiRef = doc(db, "LoaiBienBao", bien.MaLoai);
+        const loaiSnap = await getDoc(loaiRef);
+        const tenLoai = loaiSnap.exists() ? loaiSnap.data().TenLoai : "Không rõ";
+
+        document.getElementById(`tenBien${mode}`).textContent = bien.TenBien;
+        document.getElementById(`moTa${mode}`).textContent = bien.MoTa;
+        document.getElementById(`mucPhat${mode}`).textContent = bien.MucPhat;
+        document.getElementById(`tenLoai${mode}`).textContent = tenLoai;
+    } catch (error) {
+        infoBox.innerHTML = `<p style="color:red;">❌ Không thể kết nối tới Firestore</p>`;
+        console.error(error);
+    }
 }
 
 // Hiển thị đúng khung camera hoặc ảnh
