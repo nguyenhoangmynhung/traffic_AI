@@ -84,7 +84,13 @@
     <div id="lichSuContainer"></div>
     <button onclick="hienThiLichSu()">📜 Xem lịch sử làm bài</button>
 
+    <!-- Firebase SDK (CDN compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+    <!-- Quiz logic -->
     <script src="quiz.js"></script>
+
     <script>
         const tenDangNhap = localStorage.getItem("tenDangNhap");
         const userPanel = document.getElementById("userPanel");
@@ -104,7 +110,7 @@
         function dangXuat() {
             localStorage.removeItem("maND");
             localStorage.removeItem("tenDangNhap");
-            location.reload(); // Ở lại trang quiz
+            location.reload();
         }
 
         function luuTrangTruoc(event) {
