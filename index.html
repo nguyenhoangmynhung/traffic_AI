@@ -1,133 +1,136 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Nhận diện biển báo giao thông</title>
-  <link rel="icon" href="favicon.ico">
-
-  <!-- Thư viện Firebase compat (không dùng module) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-  <!-- Thư viện p5.js và ml5.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-  <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
-
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
-    h2 {
-      color: #333;
-    }
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .box {
-      width: 450px;
-      height: auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 2px solid #333;
-      padding: 15px;
-      background-color: #1e5679;
-      color: white;
-      text-align: center;
-      overflow: visible;
-      border-radius: 10px;
-    }
-    button {
-      background-color: #1e5679;
-      color: white;
-      border: none;
-      padding: 12px;
-      margin: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      width: 90%;
-      border-radius: 6px;
-    }
-    button:hover {
-      background-color: #17405c;
-    }
-    video, img {
-      width: 400px;
-      height: 320px;
-      border: 2px solid white;
-      display: block;
-      margin: auto;
-    }
-    p {
-      word-wrap: break-word;
-      font-size: 18px;
-      padding: 5px;
-    }
-    #chatbotButton, #quizButton {
-      background-color: #ff6f00;
-      margin: 20px auto;
-      display: inline-block;
-    }
-    #quizButton {
-      background-color: #009688;
-    }
-    .info-box {
-      margin-top: 15px;
-      font-size: 16px;
-      background-color: #ffffff22;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: left;
-      flex-grow: 1;
-    }
-    .info-box h4 {
-      margin-bottom: 10px;
-      color: #ffeb3b;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Nhận diện biển báo giao thông</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h2 {
+            color: #333;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .box {
+            width: 450px;
+            height: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 2px solid #333;
+            padding: 15px;
+            background-color: #1e5679;
+            color: white;
+            text-align: center;
+            overflow: visible;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #1e5679;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 90%;
+            border-radius: 6px;
+        }
+        button:hover {
+            background-color: #17405c;
+        }
+        video, img {
+            width: 400px;
+            height: 320px;
+            border: 2px solid white;
+            display: block;
+            margin: auto;
+        }
+        p {
+            word-wrap: break-word;
+            font-size: 18px;
+            padding: 5px;
+        }
+        #chatbotButton, #quizButton {
+            background-color: #ff6f00;
+            margin: 20px auto;
+            display: inline-block;
+        }
+        #quizButton {
+            background-color: #009688;
+        }
+        .info-box {
+            margin-top: 15px;
+            font-size: 16px;
+            background-color: #ffffff22;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+            flex-grow: 1;
+        }
+        .info-box h4 {
+            margin-bottom: 10px;
+            color: #ffeb3b;
+        }
+    </style>
 </head>
 <body>
-  <h2>🚦 Chào mừng bạn đến với ứng dụng nhận diện biển báo giao thông!</h2>
+    <h2>🚦 Chào mừng bạn đến với ứng dụng nhận diện biển báo giao thông!</h2>
 
-  <div class="container">
-    <div class="box">
-      <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
-      <h3>Nhận diện bằng Camera</h3>
-      <div id="videoContainer"></div>
-      <button onclick="classifyVideo()">🎯 Nhận diện</button>
-      <p id="resultCamera">Kết quả: Đang chờ...</p>
-      <div id="infoCamera" class="info-box" style="display: none;"></div>
+    <div class="container">
+        <div class="box">
+            <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
+            <h3>Nhận diện bằng Camera</h3>
+            <div id="videoContainer"></div>
+            <button onclick="classifyVideo()">🎯 Nhận diện</button>
+            <p id="resultCamera">Kết quả: Đang chờ...</p>
+            <div id="infoCamera" class="info-box" style="display: none;">
+                <h4>📘 Thông tin biển báo:</h4>
+                <p><strong>Tên biển:</strong> <span id="tenBienCam"></span></p>
+                <p><strong>Mô tả:</strong> <span id="moTaCam"></span></p>
+                <p><strong>Mức phạt:</strong> <span id="mucPhatCam"></span></p>
+                <p><strong>Loại biển:</strong> <span id="tenLoaiCam"></span></p>
+            </div>
+        </div>
+        <div class="box">
+            <button onclick="showMode('image')">🖼️ Nhận diện bằng ảnh</button>
+            <h3>Nhận diện bằng Ảnh</h3>
+            <input type="file" id="imageUpload" accept="image/*">
+            <div id="previewImage"></div>
+            <button onclick="predictImage()">📷 Nhận diện</button>
+            <p id="resultImage">Kết quả: Đang chờ...</p>
+            <div id="infoImage" class="info-box" style="display: none;">
+                <h4>📘 Thông tin biển báo:</h4>
+                <p><strong>Tên biển:</strong> <span id="tenBienImg"></span></p>
+                <p><strong>Mô tả:</strong> <span id="moTaImg"></span></p>
+                <p><strong>Mức phạt:</strong> <span id="mucPhatImg"></span></p>
+                <p><strong>Loại biển:</strong> <span id="tenLoaiImg"></span></p>
+            </div>
+        </div>
     </div>
-    <div class="box">
-      <button onclick="showMode('image')">🖼️ Nhận diện bằng ảnh</button>
-      <h3>Nhận diện bằng Ảnh</h3>
-      <input type="file" id="imageUpload" accept="image/*">
-      <div id="previewImage"></div>
-      <button onclick="predictImage()">📷 Nhận diện</button>
-      <p id="resultImage">Kết quả: Đang chờ...</p>
-      <div id="infoImage" class="info-box" style="display: none;"></div>
-    </div>
-  </div>
-  <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
-  <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
-  <audio id="audioPlayer"></audio>
+    <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
+    <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
+    <audio id="audioPlayer"></audio>
 
-  <script>
-    function goToChatbot() {
-      window.location.href = "chatbot.html";
-    }
-    document.getElementById("quizButton").addEventListener("click", function () {
-      window.location.href = "quiz.html";
-    });
-  </script>
-
-  <script src="sketch.js"></script>
+    <script>
+        function goToChatbot() {
+            window.location.href = "chatbot.html";
+        }
+        document.getElementById("quizButton").addEventListener("click", function () {
+            window.location.href = "quiz.html";
+        });
+    </script>
+    <script src="sketch.js"></script>
 </body>
 </html>
