@@ -1,7 +1,23 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 let classifier;
 let video;
 let imageElement;
 let imageModelURL = "https://teachablemachine.withgoogle.com/models/elBllFEWI/";
+
+// Cấu hình Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
+  authDomain: "trafficai-2a2d6.firebaseapp.com",
+  projectId: "trafficai-2a2d6",
+  storageBucket: "trafficai-2a2d6.firebasestorage.app",
+  messagingSenderId: "29599829580",
+  appId: "1:29599829580:web:4537c5749320276e88eee9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Tải mô hình AI
 function preload() {
@@ -77,7 +93,7 @@ function gotResultCamera(error, results) {
     let ma = chuanHoaMa(results[0].label);
     document.getElementById("resultCamera").innerText = "Kết quả: " + ma;
     playAudio(ma);
-    hienThiThongTin(ma, "infoCamera");
+    hienThiThongTin(ma, "Cam");
 }
 
 // Xử lý kết quả ảnh
@@ -90,7 +106,7 @@ function gotResultImage(error, results) {
     let ma = chuanHoaMa(results[0].label);
     document.getElementById("resultImage").innerText = "Kết quả: " + ma;
     playAudio(ma);
-    hienThiThongTin(ma, "infoImage");
+    hienThiThongTin(ma, "Img");
 }
 
 // Chuẩn hóa mã (VD: I424abc -> I424)
@@ -110,35 +126,29 @@ function playAudio(text) {
     window.speechSynthesis.speak(speech);
 }
 
-// Hiển thị thông tin biển báo từ API
-function hienThiThongTin(ma, elementId) {
-    const div = document.getElementById(elementId);
-    div.style.display = "block"; // Hiện vùng thông tin
+// Hiển thị thông tin biển báo từ Firestore
+async function hienThiThongTin(ma, mode) {
+    const bienRef = doc(db, "BienBao", ma);
+    const bienSnap = await getDoc(bienRef);
 
-    fetch(`http://localhost:3000/api/bien-bao/${ma}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                div.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
-            } else {
-                // Gán dữ liệu vào từng vùng tương ứng
-                if (elementId === "infoCamera") {
-                    document.getElementById("tenBienCam").innerText = data.TenBien;
-                    document.getElementById("moTaCam").innerText = data.MoTa;
-                    document.getElementById("mucPhatCam").innerText = data.MucPhat;
-                    document.getElementById("tenLoaiCam").innerText = data.TenLoai;
-                    } else {
-                    document.getElementById("tenBienImg").innerText = data.TenBien;
-                    document.getElementById("moTaImg").innerText = data.MoTa;
-                    document.getElementById("mucPhatImg").innerText = data.MucPhat;
-                    document.getElementById("tenLoaiImg").innerText = data.TenLoai;
-                       }
-            }
-        })
-        .catch(err => {
-            div.innerHTML = `<p style="color:red;">❌ Không thể kết nối tới server</p>`;
-            console.error("❌ Lỗi API:", err);
-        });
+    const infoBox = document.getElementById(`info${mode}`);
+    infoBox.style.display = "block";
+
+    if (!bienSnap.exists()) {
+        infoBox.innerHTML = `<p style="color:red;">❌ Không tìm thấy biển báo: ${ma}</p>`;
+        return;
+    }
+
+    const bien = bienSnap.data();
+
+    const loaiRef = doc(db, "LoaiBienBao", bien.MaLoai);
+    const loaiSnap = await getDoc(loaiRef);
+    const tenLoai = loaiSnap.exists() ? loaiSnap.data().TenLoai : "Không rõ";
+
+    document.getElementById(`tenBien${mode}`).textContent = bien.TenBien;
+    document.getElementById(`moTa${mode}`).textContent = bien.MoTa;
+    document.getElementById(`mucPhat${mode}`).textContent = bien.MucPhat;
+    document.getElementById(`tenLoai${mode}`).textContent = tenLoai;
 }
 
 // Hiển thị đúng khung camera hoặc ảnh
