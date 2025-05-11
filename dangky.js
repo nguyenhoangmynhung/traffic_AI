@@ -1,4 +1,4 @@
-// Cấu hình Firebase (thay bằng cấu hình thật của bạn nếu khác)
+// Khởi tạo Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
   authDomain: "trafficai-2a2d6.firebaseapp.com",
@@ -11,42 +11,46 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-document.getElementById("registerForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+async function dangKy() {
+  const tenDangNhap = document.getElementById("tenDangNhap").value.trim();
+  const hoTen = document.getElementById("hoTen").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const matKhau = document.getElementById("matKhau").value;
+  const result = document.getElementById("result");
 
-  const tenDangNhap = document.getElementById("username").value.trim();
-  const matKhau = document.getElementById("password").value.trim();
-  const message = document.getElementById("message");
-
-  if (!tenDangNhap || !matKhau) {
-    message.style.color = "red";
-    message.innerText = "⚠️ Vui lòng nhập đầy đủ thông tin.";
+  if (!tenDangNhap || !hoTen || !email || !matKhau) {
+    result.style.color = "red";
+    result.textContent = "⚠️ Vui lòng điền đầy đủ thông tin.";
     return;
   }
 
   try {
-    // Kiểm tra tài khoản đã tồn tại chưa
+    // Kiểm tra trùng tên đăng nhập
     const snapshot = await db.collection("NguoiDung")
       .where("TenDangNhap", "==", tenDangNhap)
       .get();
 
     if (!snapshot.empty) {
-      message.style.color = "red";
-      message.innerText = "❌ Tên đăng nhập đã tồn tại.";
+      result.style.color = "red";
+      result.textContent = "❌ Tên đăng nhập đã tồn tại!";
       return;
     }
 
-    // Thêm người dùng mới
+    // Lưu người dùng mới
     await db.collection("NguoiDung").add({
       TenDangNhap: tenDangNhap,
+      HoTen: hoTen,
+      Email: email,
       MatKhau: matKhau
     });
 
-    message.style.color = "green";
-    message.innerText = "✅ Đăng ký thành công. Hãy đăng nhập.";
-  } catch (err) {
-    console.error(err);
-    message.style.color = "red";
-    message.innerText = "❌ Lỗi kết nối Firebase.";
+    result.style.color = "green";
+    result.textContent = "✅ Đăng ký thành công!";
+    setTimeout(() => window.location.href = "dangnhap.html", 2000);
+
+  } catch (error) {
+    console.error("Lỗi đăng ký:", error);
+    result.style.color = "red";
+    result.textContent = "❌ Lỗi kết nối Firebase.";
   }
-});
+}
