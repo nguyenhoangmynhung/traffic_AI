@@ -1,4 +1,7 @@
-// Cấu hình Firebase
+<!-- Thay thế vào <head> -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  // Cấu hình Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
   authDomain: "trafficai-2a2d6.firebaseapp.com",
