@@ -82,7 +82,7 @@ function showQuestion() {
 function showResult() {
   const thoiGianKetThuc = new Date().toISOString();
   const thoiGianBatDau = localStorage.getItem("startTime");
-  const maND = parseInt(localStorage.getItem("maND"));
+  const maND = localStorage.getItem("maND");
   if (!maND) return alert("Bạn cần đăng nhập để lưu kết quả.");
 
   const chiTiet = questions.map(q => ({
@@ -120,7 +120,7 @@ function shuffleArray(array) {
 }
 
 async function hienThiLichSu() {
-  const maND = parseInt(localStorage.getItem("maND"));
+  const maND = localStorage.getItem("maND");
   if (!maND) return;
 
   try {
