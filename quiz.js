@@ -120,8 +120,8 @@ function shuffleArray(array) {
 }
 
 async function hienThiLichSu() {
-  const maND = localStorage.getItem("maND");
-  if (!maND) return;
+  const maND = parseInt(localStorage.getItem("maND"));
+if (!maND) return;
 
   try {
     const snapshot = await db.collection("BaiLamTracNghiem")
