@@ -28,7 +28,7 @@ backBtn.addEventListener('click', () => location.href = 'index.html');
 async function startQuiz() {
   try {
     const snapshot = await db.collection("CauHoi").get();
-    const data = snapshot.docs.map(doc => doc.data());
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     questions = shuffleArray(data).slice(0, 20);
     currentIndex = 0;
     score = 0;
@@ -79,30 +79,40 @@ function showQuestion() {
   });
 }
 
-function showResult() {
+async function showResult() {
   const thoiGianKetThuc = new Date().toISOString();
   const thoiGianBatDau = localStorage.getItem("startTime");
   const maND = localStorage.getItem("maND");
   if (!maND) return alert("Bạn cần đăng nhập để lưu kết quả.");
 
-  const chiTiet = questions.map(q => ({
-    MaCauHoi: q.MaCauHoi,
-    DapAnChon: q.userAnswer || '',
-    KetQua: q.userAnswer === q.DapAnDung
-  }));
+  try {
+    // Lưu bài làm
+    const docRef = await db.collection("BaiLamTracNghiem").add({
+      MaND: maND,
+      Diem: score,
+      ThoiGianBatDau: thoiGianBatDau,
+      ThoiGianKetThuc: thoiGianKetThuc
+    });
 
-  db.collection("BaiLamTracNghiem").add({
-    MaNguoiDung: maND,
-    Diem: score,
-    ThoiGianBatDau: thoiGianBatDau,
-    ThoiGianKetThuc: thoiGianKetThuc,
-    ChiTiet: chiTiet
-  }).then(() => {
-    console.log("✅ Đã lưu bài làm");
+    const maBai = docRef.id;
+
+    // Lưu từng chi tiết bài làm
+    const batch = db.batch();
+    questions.forEach(q => {
+      const chiTietRef = db.collection("ChiTietBaiLam").doc();
+      batch.set(chiTietRef, {
+        MaBai: maBai,
+        MaCauHoi: q.MaCauHoi,
+        DapAnChon: q.userAnswer || '',
+        KetQua: q.userAnswer === q.DapAnDung
+      });
+    });
+    await batch.commit();
+    console.log("✅ Đã lưu chi tiết bài làm");
     hienThiLichSu();
-  }).catch((err) => {
+  } catch (err) {
     console.error("❌ Không lưu được:", err);
-  });
+  }
 
   let resultHTML = `<h3>🎉 Bạn đã hoàn thành!</h3><p>Điểm của bạn: ${score}/${questions.length}</p><hr><h4>Chi tiết:</h4><div style="text-align: left">`;
   questions.forEach((q, i) => {
@@ -120,12 +130,12 @@ function shuffleArray(array) {
 }
 
 async function hienThiLichSu() {
-  const maND = parseInt(localStorage.getItem("maND"));
-if (!maND) return;
+  const maND = localStorage.getItem("maND");
+  if (!maND) return;
 
   try {
     const snapshot = await db.collection("BaiLamTracNghiem")
-      .where("MaNguoiDung", "==", maND)
+      .where("MaND", "==", maND)
       .orderBy("ThoiGianBatDau", "desc")
       .limit(5)
       .get();
