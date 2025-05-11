@@ -3,6 +3,20 @@ let currentIndex = 0;
 let score = 0;
 let startTime;
 
+// Khởi tạo Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
+    authDomain: "trafficai-2a2d6.firebaseapp.com",
+    projectId: "trafficai-2a2d6",
+    storageBucket: "trafficai-2a2d6.appspot.com",
+    messagingSenderId: "29599829580",
+    appId: "1:29599829580:web:4537c5749320276e88eee9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// DOM
 const quizContainer = document.getElementById('quizContainer');
 const feedback = document.getElementById('feedback');
 const startBtn = document.getElementById('startQuiz');
@@ -13,9 +27,15 @@ backBtn.addEventListener('click', () => location.href = 'index.html');
 
 async function startQuiz() {
     try {
-        const res = await fetch('http://localhost:3000/api/cau-hoi');
-        const data = await res.json();
-        questions = shuffleArray(data).slice(0, 20);
+        const snapshot = await db.collection("CauHoi").get();
+        questions = [];
+        snapshot.forEach(doc => {
+            let q = doc.data();
+            q.MaCauHoi = doc.id;
+            questions.push(q);
+        });
+
+        questions = shuffleArray(questions).slice(0, 20);
         currentIndex = 0;
         score = 0;
         startTime = new Date();
@@ -24,7 +44,7 @@ async function startQuiz() {
         showQuestion();
     } catch (err) {
         quizContainer.innerHTML = '<p>Lỗi tải dữ liệu câu hỏi.</p>';
-        console.error(err);
+        console.error("❌ Firestore error:", err);
     }
 }
 
@@ -66,35 +86,6 @@ function showQuestion() {
 }
 
 function showResult() {
-    const thoiGianKetThuc = new Date().toISOString();
-    const thoiGianBatDau = localStorage.getItem("startTime");
-    const maND = parseInt(localStorage.getItem("maND"));
-    if (!maND) return alert("Bạn cần đăng nhập để lưu kết quả.");
-
-    const chiTiet = questions.map(q => ({
-        MaCauHoi: q.MaCauHoi,
-        DapAnChon: q.userAnswer || '',
-        KetQua: q.userAnswer === q.DapAnDung
-    }));
-
-    fetch("http://localhost:3000/api/luu-ket-qua", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            maND,
-            diem: score,
-            thoiGianBatDau,
-            thoiGianKetThuc,
-            chiTiet
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log("✅ Đã lưu bài làm:", data);
-        hienThiLichSu();
-    })
-    .catch(err => console.error("❌ Không lưu được:", err));
-
     let resultHTML = `<h3>🎉 Bạn đã hoàn thành!</h3><p>Điểm của bạn: ${score}/${questions.length}</p><hr><h4>Chi tiết:</h4><div style="text-align: left">`;
     questions.forEach((q, i) => {
         resultHTML += `<div style="margin-bottom: 10px">
@@ -103,30 +94,9 @@ function showResult() {
         </div>`;
     });
     resultHTML += '</div>';
-    quizContainer.innerHTML = resultHTML + `<button onclick="startQuiz()">🔁 Làm lại</button><br><br><button onclick="location.href='index.html'">🏠 Quay về Trang Chính</button><div id="lichSuContainer" style="margin-top: 20px; text-align: left"></div>`;
+    quizContainer.innerHTML = resultHTML + `<button onclick="startQuiz()">🔁 Làm lại</button><br><br><button onclick="location.href='index.html'">🏠 Quay về Trang Chính</button>`;
 }
 
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
-}
-
-async function hienThiLichSu() {
-    const maND = localStorage.getItem("maND");
-    if (!maND) return;
-    try {
-        const res = await fetch(`http://localhost:3000/api/lich-su/${maND}`);
-        const data = await res.json();
-        let html = '<h3>🕘 Lịch sử làm bài</h3><div style="text-align: left">';
-        data.forEach(entry => {
-            html += `<div style="margin-bottom: 10px; padding: 10px; background: #ffffff; color: #333; border-left: 5px solid #007bff; border-radius: 4px">
-                📘 Bài: ${entry.MaBai} – 🕒 ${new Date(entry.ThoiGianBatDau).toLocaleString()} 
-                → ${new Date(entry.ThoiGianKetThuc).toLocaleTimeString()}<br>
-                ✅ Điểm: ${entry.Diem}/20
-            </div>`;
-        });
-        html += '</div>';
-        document.getElementById("lichSuContainer").innerHTML = html;
-    } catch (err) {
-        console.error("Lỗi lấy lịch sử:", err);
-    }
 }
