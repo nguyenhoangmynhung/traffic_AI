@@ -1,0 +1,1002 @@
+[
+  {
+    "cau_hoi": "Biển P102 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm đi ngược chiều",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm đi ngược chiều"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P102, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P102 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P102 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P102?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P106A có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm xe tải",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm xe tải"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P106A, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P106A là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P106A thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P106A?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P111A có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm xe máy",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm xe máy"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P111A, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P111A là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P111A thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P111A?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P123A có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm rẽ trái",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm rẽ trái"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P123A, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P123A là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P123A thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P123A?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P124A có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm quay đầu xe",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm quay đầu xe"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P124A, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P124A là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P124A thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P124A?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P128 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm sử dụng còi",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm sử dụng còi"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P128, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P128 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P128 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P128?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301A có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được đi thẳng",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được đi thẳng"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301A, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301A là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301A thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301A?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301B có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được rẽ phải",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được rẽ phải"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301B, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301B là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301B thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301B?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301C có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được rẽ trái",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được rẽ trái"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301C, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301C là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301C thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301C?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301D có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được rẽ phải",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được rẽ phải"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301D, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301D là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301D thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301D?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301E có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được rẽ trái",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được rẽ trái"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301E, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301E là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301E thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301E?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301F có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Chỉ được đi thẳng và rẽ phải",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Chỉ được đi thẳng và rẽ phải"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P301F, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P301F là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P301F thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P301F?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P112 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cấm người đi bộ",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cấm người đi bộ"
+  },
+  {
+    "cau_hoi": "Khi gặp biển P112, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển P112 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển P112 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển P112?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển I424 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Cầu vượt qua đường",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Cầu vượt qua đường"
+  },
+  {
+    "cau_hoi": "Khi gặp biển I424, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển I424 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển I424 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển I424?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển I423C có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Điểm bắt đầu cho người đi bộ",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Điểm bắt đầu cho người đi bộ"
+  },
+  {
+    "cau_hoi": "Khi gặp biển I423C, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển I423C là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển I423C thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển I423C?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển R305 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Đường dành cho người đi bộ",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Đường dành cho người đi bộ"
+  },
+  {
+    "cau_hoi": "Khi gặp biển R305, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển R305 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển R305 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển R305?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển W224 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Đường đi bộ cắt ngang",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Đường đi bộ cắt ngang"
+  },
+  {
+    "cau_hoi": "Khi gặp biển W224, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển W224 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển W224 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển W224?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển I424C có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Hầm chui qua đường",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Hầm chui qua đường"
+  },
+  {
+    "cau_hoi": "Khi gặp biển I424C, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển I424C là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển I424C thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển I424C?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển I423 có tên là gì?",
+    "lua_chon": [
+      "Không xác định",
+      "Vị trí người đi bộ sang ngang",
+      "Biển báo cấm xe ô tô",
+      "Biển cảnh báo nguy hiểm"
+    ],
+    "dap_an": "Vị trí người đi bộ sang ngang"
+  },
+  {
+    "cau_hoi": "Khi gặp biển I423, hành vi nào là đúng?",
+    "lua_chon": [
+      "Tiếp tục đi vào đường cấm",
+      "Đi nếu không có xe khác",
+      "Tuân thủ đúng theo nội dung biển",
+      "Đi nếu không có cảnh sát"
+    ],
+    "dap_an": "Tuân thủ đúng theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Mức phạt khi vi phạm biển I423 là bao nhiêu?",
+    "lua_chon": [
+      "Từ 100.000đ đến 200.000đ",
+      "Từ 1.000.000đ đến 2.000.000đ",
+      "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện",
+      "Không bị xử phạt"
+    ],
+    "dap_an": "Từ 4.000.000đ đến 6.000.000đ hoặc cao hơn tuỳ phương tiện"
+  },
+  {
+    "cau_hoi": "Biển I423 thuộc nhóm biển nào?",
+    "lua_chon": [
+      "Biển báo nguy hiểm",
+      "Biển báo hiệu lệnh",
+      "Biển chỉ dẫn",
+      "Biển cấm hoặc chỉ dẫn tuỳ loại"
+    ],
+    "dap_an": "Biển cấm hoặc chỉ dẫn tuỳ loại"
+  },
+  {
+    "cau_hoi": "Người điều khiển phương tiện cần làm gì khi thấy biển I423?",
+    "lua_chon": [
+      "Làm theo nội dung biển",
+      "Phớt lờ nếu không có CSGT",
+      "Làm theo người đi trước",
+      "Hỏi người đi đường"
+    ],
+    "dap_an": "Làm theo nội dung biển"
+  },
+  {
+    "cau_hoi": "Biển P301A yêu cầu người tham gia giao thông làm gì?",
+    "lua_chon": [
+      "Rẽ trái",
+      "Quay đầu",
+      "Chỉ được đi thẳng",
+      "Rẽ phải"
+    ],
+    "dap_an": "Chỉ được đi thẳng"
+  },
+  {
+    "cau_hoi": "Biển P124A có nghĩa là gì?",
+    "lua_chon": [
+      "Cấm dừng xe",
+      "Cấm quay đầu xe",
+      "Cấm rẽ trái",
+      "Cấm đi thẳng"
+    ],
+    "dap_an": "Cấm quay đầu xe"
+  },
+  {
+    "cau_hoi": "Biển R305 chỉ dẫn gì?",
+    "lua_chon": [
+      "Đường dành cho ô tô",
+      "Đường dành cho xe máy",
+      "Đường dành cho người đi bộ",
+      "Đường cấm xe tải"
+    ],
+    "dap_an": "Đường dành cho người đi bộ"
+  },
+  {
+    "cau_hoi": "Vi phạm biển P106A sẽ bị xử lý như thế nào?",
+    "lua_chon": [
+      "Không bị xử phạt",
+      "Chỉ nhắc nhở",
+      "Phạt từ 4 đến 6 triệu đồng",
+      "Phạt từ 200 đến 500 nghìn đồng"
+    ],
+    "dap_an": "Phạt từ 4 đến 6 triệu đồng"
+  },
+  {
+    "cau_hoi": "Biển W224 mang ý nghĩa gì?",
+    "lua_chon": [
+      "Báo hiệu đường cấm",
+      "Chỉ dẫn đường cụt",
+      "Báo hiệu đường đi bộ cắt ngang",
+      "Chỉ dẫn điểm quay đầu"
+    ],
+    "dap_an": "Báo hiệu đường đi bộ cắt ngang"
+  }
+]

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản</title>
+    <style>
+        body {
+            background-color: #e0f7fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-box {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        .register-box h2 {
+            color: #00796b;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            background-color: #004d40;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .login-link {
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #00796b;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <h2>📝 Đăng ký tài khoản</h2>
+        <input type="text" id="tenDangNhap" placeholder="Tên đăng nhập">
+        <input type="text" id="hoTen" placeholder="Họ và tên">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="matKhau" placeholder="Mật khẩu">
+        <button onclick="dangKy()">Đăng ký</button>
+        <p id="result"></p>
+        <div class="login-link">
+            Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
+        </div>
+    </div>
+
+    <script>
+        function dangKy() {
+            const tenDangNhap = document.getElementById("tenDangNhap").value.trim();
+            const hoTen = document.getElementById("hoTen").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const matKhau = document.getElementById("matKhau").value;
+
+            fetch("http://localhost:3000/api/dang-ky", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tenDangNhap, hoTen, email, matKhau })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("result").style.color = "green";
+                    document.getElementById("result").textContent = "✅ Đăng ký thành công!";
+                    setTimeout(() => window.location.href = "dangnhap.html", 1500);
+                } else {
+                    document.getElementById("result").style.color = "red";
+                    document.getElementById("result").textContent = "❌ " + (data.error || "Đăng ký thất bại!");
+                }
+            })
+            .catch(() => {
+                document.getElementById("result").style.color = "red";
+                document.getElementById("result").textContent = "⚠ Lỗi kết nối máy chủ.";
+            });
+        }
+    </script>
+</body>
+</html>

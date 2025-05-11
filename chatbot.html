@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Học với Chatbot AI</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .chat-container {
+            width: 500px;
+            margin: auto;
+            background-color: #1e5679;
+            padding: 20px;
+            color: white;
+            border-radius: 10px;
+        }
+
+        input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        #sendButton {
+            background-color: orange;
+            color: white;
+        }
+
+        #sendButton:hover {
+            background-color: darkorange;
+        }
+
+        #voiceButton {
+            background-color: #ff4081;
+            color: white;
+        }
+
+        #voiceButton:hover {
+            background-color: #d81b60;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            background-color: #ff4500;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #d73814;
+        }
+
+        .info-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #ffffff22;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .info-box img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 2px solid white;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: #ffeb3b;
+        }
+    </style>
+</head>
+<body>
+    <div id="userPanel" style="text-align: right; margin: 10px 20px;"></div>
+
+    <h2>💬 Học với Chatbot AI</h2>
+
+    <div class="chat-container">
+        <h3>Nhập hoặc nói mã biển báo:</h3>
+        <input type="text" id="questionInput" placeholder="Nhập mã biển báo...">
+        <button id="sendButton">Gửi</button>
+        <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
+        <div id="chatbotResponse" class="info-box"></div>
+    </div>
+<button id="viewHistoryBtn">📜 Xem lịch sử</button>
+<div id="chatHistoryContainer"></div>
+    <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
+
+    <script src="chatbot.js"></script>
+    <script>
+        const tenDangNhap = localStorage.getItem("tenDangNhap");
+        const userPanel = document.getElementById("userPanel");
+
+        if (tenDangNhap) {
+            userPanel.innerHTML = `
+                👤 Xin chào, <strong>${tenDangNhap}</strong> |
+                <button onclick="dangXuat()">🚪 Đăng xuất</button>
+            `;
+        } else {
+            userPanel.innerHTML = `
+                <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> | 
+                <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
+            `;
+        }
+
+        function dangXuat() {
+            localStorage.removeItem("maND");
+            localStorage.removeItem("tenDangNhap");
+            location.reload(); // Ở lại chatbot.html
+        }
+
+        function luuTrangTruoc(event) {
+            localStorage.setItem("redirectAfterLogin", "chatbot.html");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trắc nghiệm biển báo giao thông</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 30px;
+        }
+        .quiz-container {
+            width: 600px;
+            margin: auto;
+            background-color: #1e5679;
+            padding: 20px;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #aaa;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .quiz-option {
+            display: block;
+            margin: 10px auto;
+            padding: 12px;
+            width: 80%;
+            font-size: 16px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .quiz-option:hover {
+            background-color: darkorange;
+        }
+        #quizContainer p {
+            font-size: 18px;
+        }
+        #startQuiz, #backButton {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #startQuiz {
+            background-color: green;
+            color: white;
+        }
+        #startQuiz:hover {
+            background-color: darkgreen;
+        }
+        #backButton {
+            background-color: red;
+            color: white;
+        }
+        #backButton:hover {
+            background-color: darkred;
+        }
+        #feedback {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="userPanel" style="text-align: right; margin: 10px 20px;"></div>
+
+    <h2>🎯 Trắc nghiệm ôn tập biển báo giao thông</h2>
+
+    <div class="quiz-container">
+        <div id="quizContainer">Nhấn nút bắt đầu để làm bài trắc nghiệm!</div>
+        <p id="feedback"></p>
+        <button id="startQuiz">📖 Bắt đầu trắc nghiệm</button>
+    </div>
+
+    <button id="backButton">🏠 Quay về Trang Chính</button>
+    <div id="lichSuContainer"></div>
+    <button onclick="hienThiLichSu()">📜 Xem lịch sử làm bài</button>
+
+    <script src="quiz.js"></script>
+    <script>
+        const tenDangNhap = localStorage.getItem("tenDangNhap");
+        const userPanel = document.getElementById("userPanel");
+
+        if (tenDangNhap) {
+            userPanel.innerHTML = `
+                👤 Xin chào, <strong>${tenDangNhap}</strong> |
+                <button onclick="dangXuat()">🚪 Đăng xuất</button>
+            `;
+        } else {
+            userPanel.innerHTML = `
+                <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> |
+                <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
+            `;
+        }
+
+        function dangXuat() {
+            localStorage.removeItem("maND");
+            localStorage.removeItem("tenDangNhap");
+            location.reload(); // Ở lại trang quiz
+        }
+
+        function luuTrangTruoc(event) {
+            localStorage.setItem("redirectAfterLogin", "quiz.html");
+        }
+    </script>
+</body>
+</html>
