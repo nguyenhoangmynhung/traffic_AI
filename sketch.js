@@ -1,3 +1,18 @@
+// 🔥 Thêm đoạn này vào đầu sketch.js để kết nối Firestore
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
+  authDomain: "trafficai-2a2d6.firebaseapp.com",
+  projectId: "trafficai-2a2d6",
+  storageBucket: "trafficai-2a2d6.appspot.com",
+  messagingSenderId: "29599829580",
+  appId: "1:29599829580:web:4537c5749320276e88eee9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 let classifier;
 let video;
 let imageElement;
