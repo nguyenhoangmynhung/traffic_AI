@@ -53,7 +53,7 @@
             background-color: #004d40;
         }
 
-        #result {
+        #message {
             margin-top: 15px;
             font-weight: bold;
         }
@@ -72,49 +72,25 @@
             text-decoration: underline;
         }
     </style>
+
+    <!-- Firebase compat CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="register-box">
         <h2>📝 Đăng ký tài khoản</h2>
-        <input type="text" id="tenDangNhap" placeholder="Tên đăng nhập">
-        <input type="text" id="hoTen" placeholder="Họ và tên">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="matKhau" placeholder="Mật khẩu">
-        <button onclick="dangKy()">Đăng ký</button>
-        <p id="result"></p>
+        <form id="registerForm">
+            <input type="text" id="username" placeholder="Tên đăng nhập" required>
+            <input type="password" id="password" placeholder="Mật khẩu" required>
+            <button type="submit">Đăng ký</button>
+        </form>
+        <p id="message"></p>
         <div class="login-link">
             Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
         </div>
     </div>
 
-    <script>
-        function dangKy() {
-            const tenDangNhap = document.getElementById("tenDangNhap").value.trim();
-            const hoTen = document.getElementById("hoTen").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const matKhau = document.getElementById("matKhau").value;
-
-            fetch("http://localhost:3000/api/dang-ky", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tenDangNhap, hoTen, email, matKhau })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("result").style.color = "green";
-                    document.getElementById("result").textContent = "✅ Đăng ký thành công!";
-                    setTimeout(() => window.location.href = "dangnhap.html", 1500);
-                } else {
-                    document.getElementById("result").style.color = "red";
-                    document.getElementById("result").textContent = "❌ " + (data.error || "Đăng ký thất bại!");
-                }
-            })
-            .catch(() => {
-                document.getElementById("result").style.color = "red";
-                document.getElementById("result").textContent = "⚠ Lỗi kết nối máy chủ.";
-            });
-        }
-    </script>
+    <script src="dangky.js"></script>
 </body>
 </html>
