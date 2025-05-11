@@ -175,3 +175,5 @@ function showMode(mode) {
         previewImage.style.display = "block";
     }
 }
+window.predictImage = predictImage;
+window.classifyVideo = classifyVideo;
