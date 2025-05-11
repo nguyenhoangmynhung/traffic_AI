@@ -1,96 +1,140 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
-    <style>
-        body {
-            background-color: #e0f7fa;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <title>Đăng ký tài khoản</title>
+  <style>
+    body {
+      background-color: #e0f7fa;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .register-box {
+      background-color: #ffffff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      text-align: center;
+    }
+    .register-box h2 {
+      color: #00796b;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover {
+      background-color: #004d40;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .login-link {
+      margin-top: 18px;
+      font-size: 14px;
+    }
+    .login-link a {
+      color: #00796b;
+      text-decoration: none;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 
-        .register-box {
-            background-color: #ffffff;
-            padding: 30px 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            width: 400px;
-            text-align: center;
-        }
-
-        .register-box h2 {
-            color: #00796b;
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #00796b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 12px;
-        }
-
-        button:hover {
-            background-color: #004d40;
-        }
-
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        .login-link {
-            margin-top: 18px;
-            font-size: 14px;
-        }
-
-        .login-link a {
-            color: #00796b;
-            text-decoration: none;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
-
-    <!-- Firebase compat CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="register-box">
-        <h2>📝 Đăng ký tài khoản</h2>
-        <form id="registerForm">
-            <input type="text" id="username" placeholder="Tên đăng nhập" required>
-            <input type="password" id="password" placeholder="Mật khẩu" required>
-            <button type="submit">Đăng ký</button>
-        </form>
-        <p id="message"></p>
-        <div class="login-link">
-            Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
-        </div>
+  <div class="register-box">
+    <h2>📝 Đăng ký tài khoản</h2>
+    <input type="text" id="tenDangNhap" placeholder="Tên đăng nhập">
+    <input type="text" id="hoTen" placeholder="Họ và tên">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="matKhau" placeholder="Mật khẩu">
+    <button onclick="dangKy()">Đăng ký</button>
+    <p id="result"></p>
+    <div class="login-link">
+      Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a>
     </div>
+  </div>
 
-    <script src="dangky.js"></script>
+  <script>
+    // Cấu hình Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
+      authDomain: "trafficai-2a2d6.firebaseapp.com",
+      projectId: "trafficai-2a2d6",
+      storageBucket: "trafficai-2a2d6.appspot.com",
+      messagingSenderId: "29599829580",
+      appId: "1:29599829580:web:4537c5749320276e88eee9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function dangKy() {
+      const tenDangNhap = document.getElementById("tenDangNhap").value.trim();
+      const hoTen = document.getElementById("hoTen").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const matKhau = document.getElementById("matKhau").value;
+      const result = document.getElementById("result");
+
+      if (!tenDangNhap || !hoTen || !email || !matKhau) {
+        result.style.color = "red";
+        result.textContent = "⚠ Vui lòng điền đầy đủ thông tin.";
+        return;
+      }
+
+      try {
+        const snapshot = await db.collection("NguoiDung")
+          .where("TenDangNhap", "==", tenDangNhap)
+          .get();
+
+        if (!snapshot.empty) {
+          result.style.color = "red";
+          result.textContent = "❌ Tên đăng nhập đã tồn tại!";
+          return;
+        }
+
+        await db.collection("NguoiDung").add({
+          TenDangNhap: tenDangNhap,
+          HoTen: hoTen,
+          Email: email,
+          MatKhau: matKhau
+        });
+
+        result.style.color = "green";
+        result.textContent = "✅ Đăng ký thành công!";
+        setTimeout(() => window.location.href = "dangnhap.html", 2000);
+      } catch (error) {
+        console.error("Lỗi:", error);
+        result.style.color = "red";
+        result.textContent = "❌ Lỗi kết nối hoặc xử lý dữ liệu.";
+      }
+    }
+  </script>
 </body>
 </html>
