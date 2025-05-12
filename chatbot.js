@@ -53,7 +53,7 @@ async function sendQuestion() {
             speakText(traLoi);
         } else {
             const data = snapshot.docs[0].data();
-            traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+            traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || "không có quy định."}`;
             const content = \`
                 ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
                 📘 <strong>Tên:</strong> ${data.TenBien}<br>
