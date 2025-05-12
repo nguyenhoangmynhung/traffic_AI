@@ -30,13 +30,23 @@ document.addEventListener("DOMContentLoaded", () => {
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
   async function sendQuestion() {
-    const ma = inputField.value.trim().toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
-    if (!ma) return alert("⚠️ Vui lòng nhập mã biển báo!");
+   const queryText = inputField.value.trim().toUpperCase();
+if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
-    responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
+responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
 
-    try {
-      const snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
+// Ưu tiên tìm theo mã biển (lọc bỏ dấu cách và chấm)
+const ma = queryText.replace(/\s+/g, "").replace(/\./g, "");
+let snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
+
+// Nếu không thấy theo MaBien thì thử tìm theo TenBien gần đúng
+if (snapshot.empty) {
+  const all = await db.collection("BienBao").get();
+  const matched = all.docs.find(doc =>
+    doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
+  );
+  if (matched) snapshot = { empty: false, docs: [matched] };
+}
       const maND = localStorage.getItem("maND");
       let traLoi = "";
 
