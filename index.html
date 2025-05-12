@@ -12,6 +12,8 @@
       text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
+      line-height: 1.2;
+      margin: 0;
     }
     h2 {
       color: #333;
@@ -19,48 +21,77 @@
     .container {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      align-items: flex-start;
+      gap: 16px;
       flex-wrap: wrap;
+      padding: 10px;
     }
     .box {
-      width: 380px;
-      flex: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      width: 480px;
+      padding: 10px 12px;
       border: 2px solid #333;
-      padding: 15px;
+      border-radius: 10px;
       background-color: #1e5679;
       color: white;
-      text-align: center;
-      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      flex: none;
+    }
+    button {
+      background-color: #1e5679;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 17px;
+      cursor: pointer;
+      width: 90%;
+      border-radius: 6px;
+      margin: 8px auto;
+    }
+    button:hover {
+      background-color: #17405c;
     }
     video, img {
-      width: 320px;
-      height: 240px;
+      width: 400px;
+      height: 320px;
       border: 2px solid white;
       display: block;
       margin: auto;
     }
     p {
-      word-wrap: break-word;
+      font-size: 17px;
+      padding: 3px;
+      margin: 3px;
+    }
+    #chatbotButton, #quizButton {
+      width: 60%;
+      padding: 12px;
       font-size: 18px;
-      padding: 5px;
+      border-radius: 8px;
+      margin: 10px auto;
+      display: block;
+    }
+    #chatbotButton {
+      background-color: #ff6f00;
+    }
+    #quizButton {
+      background-color: #009688;
     }
     .info-box {
-      margin-top: 15px;
-      font-size: 16px;
+      font-size: 15px;
+      padding: 8px;
+      margin-top: 10px;
       background-color: #ffffff22;
-      padding: 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       text-align: left;
-      flex-grow: 1;
     }
     .info-box h4 {
-      margin-bottom: 10px;
       color: #ffeb3b;
+      margin: 5px 0;
     }
-
+    .info-box strong {
+      color: #ff4c4c; /* đỏ cho các label như Tên biển, Mô tả,... */
+    }
     .custom-file-upload {
       display: inline-block;
       padding: 10px 20px;
@@ -71,30 +102,8 @@
       font-weight: bold;
       margin: 10px auto;
     }
-
     #imageUpload {
       display: none;
-    }
-
-    .nav-button {
-      display: inline-block;
-      width: 300px;
-      padding: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      color: white;
-      margin: 15px auto;
-    }
-
-    #chatbotButton {
-      background-color: #ff6f00;
-    }
-
-    #quizButton {
-      background-color: #009688;
     }
   </style>
 </head>
@@ -105,7 +114,7 @@
     <div class="box">
       <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
       <div id="videoContainer"></div>
-      <label class="custom-file-upload" onclick="classifyVideo()">🎯 Nhận diện</label>
+      <button onclick="classifyVideo()">🎯 Nhận diện</button>
       <p id="resultCamera">Kết quả: Đang chờ...</p>
       <div id="infoCamera" class="info-box" style="display: none;"></div>
     </div>
@@ -115,17 +124,16 @@
       <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
       <input type="file" id="imageUpload" accept="image/*">
       <div id="previewImage"></div>
-      <label class="custom-file-upload" onclick="predictImage()">📷 Nhận diện</label>
+      <button onclick="predictImage()">📷 Nhận diện</button>
       <p id="resultImage">Kết quả: Đang chờ...</p>
       <div id="infoImage" class="info-box" style="display: none;"></div>
     </div>
   </div>
 
-  <button id="chatbotButton" class="nav-button" onclick="goToChatbot()">💬 Học với Chatbot</button>
-  <button id="quizButton" class="nav-button">📖 Chơi trắc nghiệm biển báo</button>
+  <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
+  <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
 
   <audio id="audioPlayer"></audio>
-
   <script>
     function goToChatbot() {
       window.location.href = "chatbot.html";
@@ -134,7 +142,6 @@
       window.location.href = "quiz.html";
     });
   </script>
-
   <script src="sketch.js"></script>
 </body>
 </html>
