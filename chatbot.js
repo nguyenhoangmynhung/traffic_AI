@@ -58,7 +58,7 @@ async function sendQuestion() {
                 ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
                 📘 <strong>Tên:</strong> ${data.TenBien}<br>
                 📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-                💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+                💸 <strong>Mức phạt:</strong> ${data.MucPhat || "Không có quy định"}<br>
                 📌 <strong>Loại biển:</strong> ${data.TenLoai}<br>
             \`;
             responseContainer.innerHTML = content;
