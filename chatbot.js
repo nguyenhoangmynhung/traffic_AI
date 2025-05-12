@@ -1,10 +1,23 @@
+// Khởi tạo Firebase (CDN compat)
+const firebaseConfig = {
+  apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
+  authDomain: "trafficai-2a2d6.firebaseapp.com",
+  projectId: "trafficai-2a2d6",
+  storageBucket: "trafficai-2a2d6.appspot.com",
+  messagingSenderId: "29599829580",
+  appId: "1:29599829580:web:4537c5749320276e88eee9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 document.addEventListener("DOMContentLoaded", function () {
     const inputField = document.getElementById("questionInput");
     const sendButton = document.getElementById("sendButton");
     const responseContainer = document.getElementById("chatbotResponse");
     const backButton = document.getElementById("backButton");
     const voiceButton = document.getElementById("voiceButton");
-    const viewHistoryBtn = document.getElementById("viewHistoryBtn"); // ✅ nút xem lịch sử
+    const viewHistoryBtn = document.getElementById("viewHistoryBtn");
 
     if (!inputField || !sendButton || !responseContainer || !backButton || !voiceButton) {
         console.error("❌ Lỗi: Không tìm thấy phần tử HTML cần thiết!");
@@ -44,10 +57,7 @@ function sendQuestion() {
     fetch(`http://127.0.0.1:3000/api/bien-bao/${ma}`)
         .then(res => res.json())
         .then(data => {
-            console.log("📦 Dữ liệu nhận được từ server:", data);
-
             const maND = parseInt(localStorage.getItem("maND"));
-            console.log("🧾 maND:", maND);
             let traLoi = "";
 
             if (data.error) {
@@ -61,8 +71,7 @@ function sendQuestion() {
                     📘 <strong>Tên:</strong> ${data.TenBien}<br>
                     📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
                     💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-                    📌 <strong>Loại biển:</strong> ${data.TenLoai}<br>
-                   `;
+                    📌 <strong>Loại biển:</strong> ${data.TenLoai}<br>`;
                 responseContainer.innerHTML = content;
                 speakText(traLoi);
             }
@@ -71,15 +80,11 @@ function sendQuestion() {
                 fetch("http://127.0.0.1:3000/api/luu-chatlog", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        maND,
-                        cauHoi: ma,
-                        cauTraLoi: traLoi
-                    })
+                    body: JSON.stringify({ maND, cauHoi: ma, cauTraLoi: traLoi })
                 })
-                    .then(res => res.json())
-                    .then(data => console.log("💾 Đã lưu lịch sử:", data))
-                    .catch(err => console.error("❌ Không lưu được lịch sử:", err));
+                .then(res => res.json())
+                .then(data => console.log("💾 Đã lưu lịch sử:", data))
+                .catch(err => console.error("❌ Không lưu được lịch sử:", err));
             }
         })
         .catch(err => {
@@ -92,16 +97,12 @@ function speakText(text) {
     let speech = new SpeechSynthesisUtterance(text);
     let voices = window.speechSynthesis.getVoices();
     let vietnameseVoice = voices.find(voice => voice.lang === "vi-VN" || voice.name.includes("Google Vietnamese"));
-
-    if (vietnameseVoice) {
-        speech.voice = vietnameseVoice;
-    }
+    if (vietnameseVoice) speech.voice = vietnameseVoice;
 
     speech.lang = "vi-VN";
     speech.volume = 1;
     speech.rate = 0.9;
     speech.pitch = 1.0;
-
     window.speechSynthesis.speak(speech);
 }
 
@@ -131,31 +132,15 @@ function startListening() {
     };
 
     recognition.onerror = function (event) {
-        console.error("🎤 Lỗi nhận diện giọng nói:", event.error);
         const responseContainer = document.getElementById("chatbotResponse");
         let responseMessage = "❌ Lỗi nhận diện giọng nói, hãy thử lại!";
-
         switch (event.error) {
-            case "not-allowed":
-                responseMessage = "⚠ Bạn chưa cấp quyền truy cập microphone!";
-                break;
-            case "network":
-                responseMessage = "⚠ Lỗi kết nối mạng!";
-                break;
-            case "no-speech":
-                responseMessage = "⚠ Không nhận diện được giọng nói!";
-                break;
-            case "aborted":
-                responseMessage = "⚠ Hệ thống nhận diện bị hủy.";
-                break;
-            case "audio-capture":
-                responseMessage = "⚠ Không tìm thấy microphone!";
-                break;
-            default:
-                responseMessage = "⚠ Đã xảy ra lỗi không xác định.";
-                break;
+            case "not-allowed": responseMessage = "⚠ Bạn chưa cấp quyền microphone!"; break;
+            case "network": responseMessage = "⚠ Lỗi kết nối mạng!"; break;
+            case "no-speech": responseMessage = "⚠ Không nhận diện được giọng nói!"; break;
+            case "aborted": responseMessage = "⚠ Hệ thống nhận diện bị hủy."; break;
+            case "audio-capture": responseMessage = "⚠ Không tìm thấy microphone!"; break;
         }
-
         responseContainer.innerHTML = responseMessage;
         voiceButton.innerText = "🎤 Hỏi bằng giọng nói";
         voiceButton.disabled = false;
@@ -164,7 +149,6 @@ function startListening() {
     recognition.start();
 }
 
-// ✅ THÊM PHẦN XEM LỊCH SỬ CHAT
 async function hienThiLichSuChat() {
     const container = document.getElementById("chatHistoryContainer");
     const maND = localStorage.getItem("maND");
@@ -189,8 +173,7 @@ async function hienThiLichSuChat() {
                     🕒 ${new Date(log.ThoiGian).toLocaleString()}<br>
                     ❓ <strong>Hỏi:</strong> ${log.CauHoi}<br>
                     💬 <strong>Đáp:</strong> ${log.TraLoi}
-                </li>
-            `;
+                </li>`;
         });
         html += "</ul>";
         container.innerHTML = html;
