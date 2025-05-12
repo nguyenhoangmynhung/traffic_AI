@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Học với Chatbot AI</title>
   <style>
     body {
@@ -36,18 +36,33 @@
       margin: 5px;
     }
 
-    #sendButton { background-color: orange; color: white; }
-    #sendButton:hover { background-color: darkorange; }
+    #sendButton {
+      background-color: orange;
+      color: white;
+    }
 
-    #voiceButton { background-color: #ff4081; color: white; }
-    #voiceButton:hover { background-color: #d81b60; }
+    #sendButton:hover {
+      background-color: darkorange;
+    }
+
+    #voiceButton {
+      background-color: #ff4081;
+      color: white;
+    }
+
+    #voiceButton:hover {
+      background-color: #d81b60;
+    }
 
     .back-btn {
       margin-top: 20px;
       background-color: #ff4500;
       color: white;
     }
-    .back-btn:hover { background-color: #d73814; }
+
+    .back-btn:hover {
+      background-color: #d73814;
+    }
 
     .info-box {
       margin-top: 20px;
@@ -64,21 +79,9 @@
     }
   </style>
 
-  <!-- ✅ Firebase CDN compat -->
+  <!-- ✅ Firebase compat (JS xử lý riêng trong chatbot.js) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
-      authDomain: "trafficai-2a2d6.firebaseapp.com",
-      projectId: "trafficai-2a2d6",
-      storageBucket: "trafficai-2a2d6.appspot.com",
-      messagingSenderId: "29599829580",
-      appId: "1:29599829580:web:4537c5749320276e88eee9"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
 </head>
 <body>
   <div id="userPanel" style="text-align: right; margin: 10px 20px;"></div>
@@ -87,21 +90,20 @@
 
   <div class="chat-container">
     <h3>Nhập hoặc nói mã biển báo:</h3>
-    <input type="text" id="questionInput" placeholder="Nhập mã biển báo...">
+    <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
     <button id="sendButton">Gửi</button>
     <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
     <div id="chatbotResponse" class="info-box"></div>
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer" style="max-width: 600px; margin: 20px auto; text-align: left;"></div>
+  <div id="chatHistoryContainer"></div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
-  <!-- ✅ File xử lý logic -->
+  <!-- ✅ JS xử lý chính -->
   <script src="chatbot.js"></script>
 
-  <!-- ✅ Xử lý login/logout -->
   <script>
     const tenDangNhap = localStorage.getItem("tenDangNhap");
     const userPanel = document.getElementById("userPanel");
@@ -113,15 +115,15 @@
       `;
     } else {
       userPanel.innerHTML = `
-        <a href="dangnhap.html" onclick="luuTrangTruoc()">🔐 Đăng nhập</a> |
-        <a href="dangky.html" onclick="luuTrangTruoc()">📝 Đăng ký</a>
+        <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> |
+        <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
       `;
     }
 
     function dangXuat() {
       localStorage.removeItem("maND");
       localStorage.removeItem("tenDangNhap");
-      location.reload();
+      location.reload(); // ở lại trang
     }
 
     function luuTrangTruoc() {
