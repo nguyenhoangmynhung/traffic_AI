@@ -36,33 +36,18 @@
       margin: 5px;
     }
 
-    #sendButton {
-      background-color: orange;
-      color: white;
-    }
+    #sendButton { background-color: orange; color: white; }
+    #sendButton:hover { background-color: darkorange; }
 
-    #sendButton:hover {
-      background-color: darkorange;
-    }
-
-    #voiceButton {
-      background-color: #ff4081;
-      color: white;
-    }
-
-    #voiceButton:hover {
-      background-color: #d81b60;
-    }
+    #voiceButton { background-color: #ff4081; color: white; }
+    #voiceButton:hover { background-color: #d81b60; }
 
     .back-btn {
       margin-top: 20px;
       background-color: #ff4500;
       color: white;
     }
-
-    .back-btn:hover {
-      background-color: #d73814;
-    }
+    .back-btn:hover { background-color: #d73814; }
 
     .info-box {
       margin-top: 20px;
@@ -72,14 +57,6 @@
       color: white;
       font-size: 16px;
       text-align: left;
-    }
-
-    .info-box img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 10px;
-      border: 2px solid white;
-      border-radius: 6px;
     }
 
     .info-box strong {
@@ -117,14 +94,14 @@
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer" class="info-box"></div>
+  <div id="chatHistoryContainer" style="max-width: 600px; margin: 20px auto; text-align: left;"></div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
-  <!-- ✅ Gọi chatbot.js sau khi Firebase đã sẵn sàng -->
+  <!-- ✅ File xử lý logic -->
   <script src="chatbot.js"></script>
 
-  <!-- Đăng nhập / đăng xuất -->
+  <!-- ✅ Xử lý login/logout -->
   <script>
     const tenDangNhap = localStorage.getItem("tenDangNhap");
     const userPanel = document.getElementById("userPanel");
@@ -136,8 +113,8 @@
       `;
     } else {
       userPanel.innerHTML = `
-        <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> | 
-        <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
+        <a href="dangnhap.html" onclick="luuTrangTruoc()">🔐 Đăng nhập</a> |
+        <a href="dangky.html" onclick="luuTrangTruoc()">📝 Đăng ký</a>
       `;
     }
 
@@ -147,7 +124,7 @@
       location.reload();
     }
 
-    function luuTrangTruoc(event) {
+    function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
   </script>
