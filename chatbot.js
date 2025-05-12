@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", () => {
 // Khởi tạo Firebase (CDN compat)
 const firebaseConfig = {
   apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
@@ -154,3 +155,4 @@ async function hienThiLichSu() {
     console.error("Lỗi lấy lịch sử:", err);
   }
 }
+});
