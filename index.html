@@ -86,6 +86,20 @@
       margin-bottom: 10px;
       color: #ffeb3b;
     }
+    .custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ffa000;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 10px auto;
+}
+
+#imageUpload {
+  display: none;
+}
   </style>
 </head>
 <body>
@@ -104,7 +118,8 @@
     <div class="box">
       <button onclick="showMode('image')">🖼️ Nhận diện bằng ảnh</button>
       <h3>Nhận diện bằng Ảnh</h3>
-      <input type="file" id="imageUpload" accept="image/*">
+     <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
+     <input type="file" id="imageUpload" accept="image/*">
       <div id="previewImage"></div>
       <button onclick="predictImage()">📷 Nhận diện</button>
       <p id="resultImage">Kết quả: Đang chờ...</p>
