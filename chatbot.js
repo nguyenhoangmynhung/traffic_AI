@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
- async function sendQuestion() {
+async function sendQuestion() {
   const queryText = inputField.value.trim().toUpperCase();
   if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
@@ -65,15 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (data.MaLoai) {
         try {
-          const loaiSnap = await db.collection("LoaiBien")
-            .where("MaLoai", "==", data.MaLoai)
-            .limit(1)
-            .get();
-          if (!loaiSnap.empty) {
-            tenLoai = loaiSnap.docs[0].data().TenLoai || "Chưa xác định";
+          const loaiDoc = await db.collection("LoaiBien").doc(data.MaLoai).get();
+          if (loaiDoc.exists) {
+            tenLoai = loaiDoc.data().TenLoai || "Chưa xác định";
           }
-        } catch (loaiErr) {
-          console.error("❌ Lỗi lấy loại biển:", loaiErr);
+        } catch (err) {
+          console.error("❌ Lỗi lấy loại biển:", err);
         }
       }
 
