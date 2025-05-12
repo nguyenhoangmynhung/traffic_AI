@@ -12,7 +12,6 @@
       text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
-      margin: 0;
     }
     h2 {
       color: #333;
@@ -23,30 +22,30 @@
       align-items: stretch;
       gap: 20px;
       flex-wrap: wrap;
-      padding: 10px;
     }
     .box {
-      width: 480px;
-      padding: 10px 12px;
-      border: 2px solid #333;
-      border-radius: 10px;
-      background-color: #1e5679;
-      color: white;
+      width: 470px;
+      min-height: 580px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      min-height: 600px;
+      justify-content: space-between;
+      border: 2px solid #333;
+      padding: 15px;
+      background-color: #1e5679;
+      color: white;
+      text-align: center;
+      border-radius: 10px;
     }
     button {
       background-color: #1e5679;
       color: white;
       border: none;
-      padding: 10px;
-      font-size: 17px;
+      padding: 12px;
+      margin: 10px auto;
+      font-size: 18px;
       cursor: pointer;
       width: 90%;
       border-radius: 6px;
-      margin: 8px auto;
     }
     button:hover {
       background-color: #17405c;
@@ -59,45 +58,49 @@
       margin: auto;
     }
     p {
+      word-wrap: break-word;
       font-size: 17px;
       padding: 3px;
-      margin: 3px;
     }
-    .action-buttons {
+    #chatbotButton, #quizButton {
+      font-size: 17px;
+      padding: 12px 28px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    #chatbotButton {
+      background-color: #ff6f00;
+      color: white;
+    }
+    #quizButton {
+      background-color: #009688;
+      color: white;
+    }
+    .button-container {
       display: flex;
       justify-content: center;
       gap: 20px;
       margin-top: 20px;
       flex-wrap: wrap;
     }
-    .action-buttons button {
-      width: 250px;
-      font-size: 17px;
-      padding: 12px;
-    }
-    #chatbotButton {
-      background-color: #ff6f00;
-    }
-    #quizButton {
-      background-color: #009688;
-    }
     .info-box {
-      font-size: 15px;
-      padding: 8px;
       margin-top: 10px;
+      font-size: 15px;
       background-color: #ffffff22;
-      border-radius: 6px;
+      padding: 8px;
+      border-radius: 8px;
       text-align: left;
+      flex-grow: 1;
     }
     .info-box h4 {
+      margin-bottom: 8px;
       color: #ffeb3b;
-      margin: 5px 0;
     }
     .info-box strong {
-      color: #ff4c4c;
+      color: red;
     }
-    .custom-file-upload,
-    .custom-detect-button {
+    .custom-file-upload {
       display: inline-block;
       padding: 10px 20px;
       background-color: #ffa000;
@@ -106,10 +109,12 @@
       cursor: pointer;
       font-weight: bold;
       margin: 10px auto;
-      width: 180px;
     }
     #imageUpload {
       display: none;
+    }
+    .orange-button {
+      background-color: #ffa000;
     }
   </style>
 </head>
@@ -120,28 +125,29 @@
     <div class="box">
       <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
       <div id="videoContainer"></div>
-      <label class="custom-detect-button" onclick="classifyVideo()">🎯 Nhận diện</label>
+      <button onclick="classifyVideo()" class="orange-button">🎯 Nhận diện</button>
       <p id="resultCamera">Kết quả: Đang chờ...</p>
       <div id="infoCamera" class="info-box" style="display: none;"></div>
     </div>
 
     <div class="box">
       <button onclick="showMode('image')">🖼️ Nhận diện bằng ảnh</button>
-      <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
+      <label for="imageUpload" class="custom-file-upload">📄 Chọn ảnh</label>
       <input type="file" id="imageUpload" accept="image/*">
       <div id="previewImage"></div>
-      <label class="custom-detect-button" onclick="predictImage()">📷 Nhận diện</label>
+      <button onclick="predictImage()" class="orange-button">📷 Nhận diện</button>
       <p id="resultImage">Kết quả: Đang chờ...</p>
       <div id="infoImage" class="info-box" style="display: none;"></div>
     </div>
   </div>
 
-  <div class="action-buttons">
+  <div class="button-container">
     <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
-    <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
+    <button id="quizButton">📚 Chơi trắc nghiệm biển báo</button>
   </div>
 
   <audio id="audioPlayer"></audio>
+
   <script>
     function goToChatbot() {
       window.location.href = "chatbot.html";
@@ -150,6 +156,8 @@
       window.location.href = "quiz.html";
     });
   </script>
+
   <script src="sketch.js"></script>
 </body>
 </html>
+
