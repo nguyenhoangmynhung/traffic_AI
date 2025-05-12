@@ -1,14 +1,5 @@
-// Khởi tạo Firebase (CDN compat)
-const firebaseConfig = {
-  apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
-  authDomain: "trafficai-2a2d6.firebaseapp.com",
-  projectId: "trafficai-2a2d6",
-  storageBucket: "trafficai-2a2d6.appspot.com",
-  messagingSenderId: "29599829580",
-  appId: "1:29599829580:web:4537c5749320276e88eee9"
-};
 
-firebase.initializeApp(firebaseConfig);
+// Firebase đã được khai báo từ HTML, chỉ cần sử dụng db
 const db = firebase.firestore();
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -26,20 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sendButton.addEventListener("click", sendQuestion);
     inputField.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            sendQuestion();
-        }
+        if (event.key === "Enter") sendQuestion();
     });
 
-    backButton.addEventListener("click", function () {
-        window.location.href = "index.html";
-    });
-
+    backButton.addEventListener("click", () => window.location.href = "index.html");
     voiceButton.addEventListener("click", startListening);
-
-    if (viewHistoryBtn) {
-        viewHistoryBtn.addEventListener("click", hienThiLichSuChat);
-    }
+    if (viewHistoryBtn) viewHistoryBtn.addEventListener("click", hienThiLichSuChat);
 });
 
 function sendQuestion() {
@@ -66,25 +49,27 @@ function sendQuestion() {
                 speakText(data.error);
             } else {
                 traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-                const content = `
+                responseContainer.innerHTML = `
                     ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
                     📘 <strong>Tên:</strong> ${data.TenBien}<br>
                     📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
                     💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-                    📌 <strong>Loại biển:</strong> ${data.TenLoai}<br>`;
-                responseContainer.innerHTML = content;
+                    📌 <strong>Loại biển:</strong> ${data.TenLoai}<br>
+                `;
                 speakText(traLoi);
             }
 
             if (maND) {
-                fetch("http://127.0.0.1:3000/api/luu-chatlog", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ maND, cauHoi: ma, cauTraLoi: traLoi })
-                })
-                .then(res => res.json())
-                .then(data => console.log("💾 Đã lưu lịch sử:", data))
-                .catch(err => console.error("❌ Không lưu được lịch sử:", err));
+                db.collection("ChatLog").add({
+                    MaND: maND,
+                    CauHoi: ma,
+                    TraLoi: traLoi,
+                    ThoiGian: new Date().toISOString()
+                }).then(() => {
+                    console.log("💾 Đã lưu lịch sử chat.");
+                }).catch(err => {
+                    console.error("❌ Không lưu được lịch sử:", err);
+                });
             }
         })
         .catch(err => {
@@ -98,7 +83,6 @@ function speakText(text) {
     let voices = window.speechSynthesis.getVoices();
     let vietnameseVoice = voices.find(voice => voice.lang === "vi-VN" || voice.name.includes("Google Vietnamese"));
     if (vietnameseVoice) speech.voice = vietnameseVoice;
-
     speech.lang = "vi-VN";
     speech.volume = 1;
     speech.rate = 0.9;
@@ -108,7 +92,7 @@ function speakText(text) {
 
 function startListening() {
     if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-        alert("❌ Trình duyệt của bạn không hỗ trợ nhận diện giọng nói.");
+        alert("❌ Trình duyệt không hỗ trợ giọng nói.");
         return;
     }
 
@@ -118,7 +102,7 @@ function startListening() {
     recognition.maxAlternatives = 1;
 
     recognition.onstart = function () {
-        document.getElementById("chatbotResponse").innerHTML = "🎤 Đang nghe... Hãy nói tên biển báo!";
+        document.getElementById("chatbotResponse").innerHTML = "🎤 Đang nghe...";
         voiceButton.innerText = "⏳ Đang nghe...";
         voiceButton.disabled = true;
     };
@@ -133,15 +117,8 @@ function startListening() {
 
     recognition.onerror = function (event) {
         const responseContainer = document.getElementById("chatbotResponse");
-        let responseMessage = "❌ Lỗi nhận diện giọng nói, hãy thử lại!";
-        switch (event.error) {
-            case "not-allowed": responseMessage = "⚠ Bạn chưa cấp quyền microphone!"; break;
-            case "network": responseMessage = "⚠ Lỗi kết nối mạng!"; break;
-            case "no-speech": responseMessage = "⚠ Không nhận diện được giọng nói!"; break;
-            case "aborted": responseMessage = "⚠ Hệ thống nhận diện bị hủy."; break;
-            case "audio-capture": responseMessage = "⚠ Không tìm thấy microphone!"; break;
-        }
-        responseContainer.innerHTML = responseMessage;
+        let msg = "❌ Lỗi nhận diện giọng nói";
+        responseContainer.innerHTML = msg;
         voiceButton.innerText = "🎤 Hỏi bằng giọng nói";
         voiceButton.disabled = false;
     };
@@ -158,22 +135,27 @@ async function hienThiLichSuChat() {
     }
 
     try {
-        const res = await fetch(`http://localhost:3000/api/chatlog/${maND}`);
-        const data = await res.json();
+        const snapshot = await db.collection("ChatLog")
+            .where("MaND", "==", parseInt(maND))
+            .orderBy("ThoiGian", "desc")
+            .limit(10)
+            .get();
 
-        if (data.length === 0) {
+        if (snapshot.empty) {
             container.innerHTML = "<p>📭 Chưa có lịch sử hỏi đáp.</p>";
             return;
         }
 
         let html = "<h3>📜 Lịch sử hỏi đáp</h3><ul>";
-        data.forEach(log => {
+        snapshot.forEach(doc => {
+            const data = doc.data();
             html += `
                 <li style="margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                    🕒 ${new Date(log.ThoiGian).toLocaleString()}<br>
-                    ❓ <strong>Hỏi:</strong> ${log.CauHoi}<br>
-                    💬 <strong>Đáp:</strong> ${log.TraLoi}
-                </li>`;
+                    🕒 ${new Date(data.ThoiGian).toLocaleString()}<br>
+                    ❓ <strong>Hỏi:</strong> ${data.CauHoi}<br>
+                    💬 <strong>Đáp:</strong> ${data.TraLoi}
+                </li>
+            `;
         });
         html += "</ul>";
         container.innerHTML = html;
