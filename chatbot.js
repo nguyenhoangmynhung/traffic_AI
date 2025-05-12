@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let traLoi = "";
 
   try {
-    const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // lấy mã biển như R305, P112A
+    const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // ví dụ: R305, P112A
     const ma = maMatch ? maMatch[0] : "";
 
     let snapshot = await db.collection("BienBao")
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .limit(1)
       .get();
 
-    // Nếu không có mã, hoặc mã sai => tìm theo tên gần đúng
+    // Nếu không có mã, tìm theo tên gần đúng
     if (snapshot.empty) {
       const all = await db.collection("BienBao").get();
       const matched = all.docs.find(doc =>
@@ -62,16 +62,21 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       const data = snapshot.docs[0].data();
       let tenLoai = "Chưa xác định";
+
       if (data.MaLoai) {
         try {
-          const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
-          if (loaiRef.exists) {
-            tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+          const loaiSnap = await db.collection("LoaiBien")
+            .where("MaLoai", "==", data.MaLoai)
+            .limit(1)
+            .get();
+          if (!loaiSnap.empty) {
+            tenLoai = loaiSnap.docs[0].data().TenLoai || "Chưa xác định";
           }
         } catch (loaiErr) {
           console.error("❌ Lỗi lấy loại biển:", loaiErr);
         }
       }
+
       traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
       const html = `
         ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
@@ -96,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
 }
-
   function speakText(text) {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "vi-VN";
