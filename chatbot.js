@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
-// Khởi tạo Firebase (CDN compat)
+// Khởi tạo Firebase (nếu chưa có)
 const firebaseConfig = {
   apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
   authDomain: "trafficai-2a2d6.firebaseapp.com",
@@ -14,145 +13,116 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-// Biến trạng thái
-let questions = [];
-let currentIndex = 0;
-let score = 0;
-let startTime;
+document.addEventListener("DOMContentLoaded", () => {
+  const inputField = document.getElementById("questionInput");
+  const sendButton = document.getElementById("sendButton");
+  const responseContainer = document.getElementById("chatbotResponse");
+  const backButton = document.getElementById("backButton");
+  const voiceButton = document.getElementById("voiceButton");
+  const viewHistoryBtn = document.getElementById("viewHistoryBtn");
 
-const quizContainer = document.getElementById('quizContainer');
-const feedback = document.getElementById('feedback');
-const startBtn = document.getElementById('startQuiz');
-const backBtn = document.getElementById('backButton');
-
-startBtn.addEventListener('click', startQuiz);
-backBtn.addEventListener('click', () => location.href = 'index.html');
-
-async function startQuiz() {
-  try {
-    const snapshot = await db.collection("CauHoi").get();
-    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    questions = shuffleArray(data).slice(0, 20);
-    currentIndex = 0;
-    score = 0;
-    startTime = new Date();
-    localStorage.setItem("startTime", startTime.toISOString());
-    feedback.textContent = '';
-    showQuestion();
-  } catch (err) {
-    quizContainer.innerHTML = '<p>Lỗi tải dữ liệu câu hỏi.</p>';
-    console.error(err);
-  }
-}
-
-function showQuestion() {
-  const question = questions[currentIndex];
-  quizContainer.innerHTML = `
-      <h3 style="text-align: left">Câu ${currentIndex + 1}: ${question.NoiDung}</h3>
-      <button class="quiz-option" data-answer="A">A. ${question.DapAnA}</button>
-      <button class="quiz-option" data-answer="B">B. ${question.DapAnB}</button>
-      <button class="quiz-option" data-answer="C">C. ${question.DapAnC}</button>
-      <button class="quiz-option" data-answer="D">D. ${question.DapAnD}</button>
-  `;
-  document.querySelectorAll('.quiz-option').forEach(option => {
-    option.addEventListener('click', () => {
-      const answer = option.dataset.answer;
-      const correct = question.DapAnDung;
-      question.userAnswer = answer;
-      document.querySelectorAll('.quiz-option').forEach(btn => {
-        btn.disabled = true;
-        if (btn.dataset.answer === correct) {
-          btn.style.backgroundColor = 'green';
-          btn.innerHTML += ' ✓ Đúng';
-        } else if (btn.dataset.answer === answer) {
-          btn.style.backgroundColor = 'red';
-          btn.innerHTML += ' ✗ Sai';
-        }
-      });
-      if (answer === correct) score++;
-      setTimeout(() => {
-        currentIndex++;
-        if (currentIndex < questions.length) {
-          showQuestion();
-        } else {
-          showResult();
-        }
-      }, 1000);
-    });
+  sendButton?.addEventListener("click", sendQuestion);
+  inputField?.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendQuestion();
   });
-}
+  backButton?.addEventListener("click", () => location.href = "index.html");
+  voiceButton?.addEventListener("click", startListening);
+  viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-async function showResult() {
-  const thoiGianKetThuc = new Date().toISOString();
-  const thoiGianBatDau = localStorage.getItem("startTime");
-  const maND = localStorage.getItem("maND");
-  if (!maND) return alert("Bạn cần đăng nhập để lưu kết quả.");
+  async function sendQuestion() {
+    const ma = inputField.value.trim().toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
+    if (!ma) return alert("⚠️ Vui lòng nhập mã biển báo!");
 
-  try {
-    const docRef = await db.collection("BaiLamTracNghiem").add({
-      MaND: maND,
-      Diem: score,
-      ThoiGianBatDau: thoiGianBatDau,
-      ThoiGianKetThuc: thoiGianKetThuc
-    });
+    responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
 
-    const maBai = docRef.id;
-    const batch = db.batch();
-    questions.forEach(q => {
-      const chiTietRef = db.collection("ChiTietBaiLam").doc();
-      batch.set(chiTietRef, {
-        MaBai: maBai,
-        MaCauHoi: q.MaCauHoi,
-        DapAnChon: q.userAnswer || '',
-        KetQua: q.userAnswer === q.DapAnDung
+    try {
+      const snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
+      const maND = localStorage.getItem("maND");
+      let traLoi = "";
+
+      if (snapshot.empty) {
+        traLoi = `Không tìm thấy mã biển báo ${ma}`;
+        responseContainer.innerHTML = `❌ ${traLoi}`;
+        speakText(traLoi);
+      } else {
+        const data = snapshot.docs[0].data();
+        traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+        const html = `
+          ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+          📘 <strong>Tên:</strong> ${data.TenBien}<br>
+          📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+          💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+          📌 <strong>Loại biển:</strong> ${data.TenLoai || 'Chưa xác định'}<br>`;
+        responseContainer.innerHTML = html;
+        speakText(traLoi);
+      }
+
+      if (maND) {
+        await db.collection("ChatLog").add({
+          MaND: maND,
+          CauHoi: ma,
+          TraLoi: traLoi,
+          ThoiGian: new Date().toISOString()
+        });
+      }
+
+    } catch (err) {
+      console.error("❌ Lỗi tìm kiếm:", err);
+      responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
+    }
+  }
+
+  function speakText(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "vi-VN";
+    speech.rate = 0.9;
+    window.speechSynthesis.speak(speech);
+  }
+
+  function startListening() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "vi-VN";
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript.trim();
+      inputField.value = transcript;
+      sendQuestion();
+    };
+    recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
+    recognition.start();
+  }
+
+  async function hienThiLichSuChat() {
+    const container = document.getElementById("chatHistoryContainer");
+    const maND = localStorage.getItem("maND");
+    if (!maND) return container.innerHTML = "⚠️ Cần đăng nhập để xem lịch sử.";
+
+    try {
+      const snapshot = await db.collection("ChatLog")
+        .where("MaND", "==", maND)
+        .orderBy("ThoiGian", "desc")
+        .limit(10).get();
+
+      if (snapshot.empty) {
+        container.innerHTML = "📭 Chưa có lịch sử hỏi đáp.";
+        return;
+      }
+
+      let html = "<h3>📜 Lịch sử hỏi đáp</h3><ul>";
+      snapshot.forEach(doc => {
+        const log = doc.data();
+        html += `
+          <li style="margin-bottom: 10px;">
+            🕒 ${new Date(log.ThoiGian).toLocaleString()}<br>
+            ❓ <strong>Hỏi:</strong> ${log.CauHoi}<br>
+            💬 <strong>Đáp:</strong> ${log.TraLoi}
+          </li>`;
       });
-    });
-    await batch.commit();
-    console.log("✅ Đã lưu chi tiết bài làm");
-    hienThiLichSu();
-  } catch (err) {
-    console.error("❌ Không lưu được:", err);
+      html += "</ul>";
+      container.innerHTML = html;
+
+    } catch (err) {
+      console.error("❌ Lỗi lịch sử:", err);
+      container.innerHTML = "❌ Không thể tải lịch sử!";
+    }
   }
-
-  let resultHTML = `<h3>🎉 Bạn đã hoàn thành!</h3><p>Điểm của bạn: ${score}/${questions.length}</p><hr><h4>Chi tiết:</h4><div style="text-align: left">`;
-  questions.forEach((q, i) => {
-    resultHTML += `<div style="margin-bottom: 10px">
-        <strong>Câu ${i + 1}</strong>: ${q.NoiDung}<br>
-        ✨ Bạn chọn: <strong>${q.userAnswer || "Không chọn"}</strong> – ${q.userAnswer === q.DapAnDung ? '✓ Đúng' : '✗ Sai'}
-    </div>`;
-  });
-  resultHTML += '</div>';
-  quizContainer.innerHTML = resultHTML + `<button onclick="startQuiz()">🔁 Làm lại</button><br><br><button onclick="location.href='index.html'">🏠 Quay về Trang Chính</button><div id="lichSuContainer" style="margin-top: 20px; text-align: left"></div>`;
-}
-
-function shuffleArray(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
-
-async function hienThiLichSu() {
-  const maND = localStorage.getItem("maND");
-  if (!maND) return;
-
-  try {
-    const snapshot = await db.collection("BaiLamTracNghiem")
-      .where("MaND", "==", maND)
-      .orderBy("ThoiGianBatDau", "desc")
-      .limit(5)
-      .get();
-
-    let html = '<h3>🕘 Lịch sử làm bài</h3><div style="text-align: left">';
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      html += `<div style="margin-bottom: 10px; padding: 10px; background: #ffffff; color: #333; border-left: 5px solid #007bff; border-radius: 4px">
-          📘 Mã bài: ${doc.id} – 🕒 ${new Date(data.ThoiGianBatDau).toLocaleString()}
-          → ${new Date(data.ThoiGianKetThuc).toLocaleTimeString()}<br>
-          ✅ Điểm: ${data.Diem}/20
-      </div>`;
-    });
-    html += '</div>';
-    document.getElementById("lichSuContainer").innerHTML = html;
-  } catch (err) {
-    console.error("Lỗi lấy lịch sử:", err);
-  }
-}
 });
