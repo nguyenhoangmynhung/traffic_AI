@@ -61,13 +61,24 @@ document.addEventListener("DOMContentLoaded", () => {
       speakText(traLoi);
     } else {
       const data = snapshot.docs[0].data();
+      let tenLoai = "Chưa xác định";
+      if (data.MaLoai) {
+        try {
+          const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
+          if (loaiRef.exists) {
+            tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+          }
+        } catch (loaiErr) {
+          console.error("❌ Lỗi lấy loại biển:", loaiErr);
+        }
+      }
       traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
       const html = `
         ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
         📘 <strong>Tên:</strong> ${data.TenBien}<br>
         📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
         💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-        📌 <strong>Loại biển:</strong> ${data.TenLoai || 'Chưa xác định'}<br>`;
+        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
       responseContainer.innerHTML = html;
       speakText(traLoi);
     }
