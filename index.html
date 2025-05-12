@@ -108,7 +108,6 @@
   <div class="container">
     <div class="box">
       <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
-      <h3>Nhận diện bằng Camera</h3>
       <div id="videoContainer"></div>
       <button onclick="classifyVideo()">🎯 Nhận diện</button>
       <p id="resultCamera">Kết quả: Đang chờ...</p>
@@ -117,8 +116,7 @@
 
     <div class="box">
       <button onclick="showMode('image')">🖼️ Nhận diện bằng ảnh</button>
-      <h3>Nhận diện bằng Ảnh</h3>
-     <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
+      <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
      <input type="file" id="imageUpload" accept="image/*">
       <div id="previewImage"></div>
       <button onclick="predictImage()">📷 Nhận diện</button>
