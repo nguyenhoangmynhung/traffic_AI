@@ -12,7 +12,6 @@
       text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
-      line-height: 1.2;
       margin: 0;
     }
     h2 {
@@ -21,8 +20,8 @@
     .container {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      gap: 16px;
+      align-items: stretch;
+      gap: 20px;
       flex-wrap: wrap;
       padding: 10px;
     }
@@ -35,7 +34,8 @@
       color: white;
       display: flex;
       flex-direction: column;
-      flex: none;
+      justify-content: flex-start;
+      min-height: 600px;
     }
     button {
       background-color: #1e5679;
@@ -63,13 +63,17 @@
       padding: 3px;
       margin: 3px;
     }
-    #chatbotButton, #quizButton {
-      width: 60%;
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .action-buttons button {
+      width: 250px;
+      font-size: 17px;
       padding: 12px;
-      font-size: 18px;
-      border-radius: 8px;
-      margin: 10px auto;
-      display: block;
     }
     #chatbotButton {
       background-color: #ff6f00;
@@ -90,9 +94,10 @@
       margin: 5px 0;
     }
     .info-box strong {
-      color: #ff4c4c; /* đỏ cho các label như Tên biển, Mô tả,... */
+      color: #ff4c4c;
     }
-    .custom-file-upload {
+    .custom-file-upload,
+    .custom-detect-button {
       display: inline-block;
       padding: 10px 20px;
       background-color: #ffa000;
@@ -101,6 +106,7 @@
       cursor: pointer;
       font-weight: bold;
       margin: 10px auto;
+      width: 180px;
     }
     #imageUpload {
       display: none;
@@ -114,7 +120,7 @@
     <div class="box">
       <button onclick="showMode('camera')">📷 Nhận diện bằng Camera</button>
       <div id="videoContainer"></div>
-      <button onclick="classifyVideo()">🎯 Nhận diện</button>
+      <label class="custom-detect-button" onclick="classifyVideo()">🎯 Nhận diện</label>
       <p id="resultCamera">Kết quả: Đang chờ...</p>
       <div id="infoCamera" class="info-box" style="display: none;"></div>
     </div>
@@ -124,14 +130,16 @@
       <label for="imageUpload" class="custom-file-upload">📤 Chọn ảnh</label>
       <input type="file" id="imageUpload" accept="image/*">
       <div id="previewImage"></div>
-      <button onclick="predictImage()">📷 Nhận diện</button>
+      <label class="custom-detect-button" onclick="predictImage()">📷 Nhận diện</label>
       <p id="resultImage">Kết quả: Đang chờ...</p>
       <div id="infoImage" class="info-box" style="display: none;"></div>
     </div>
   </div>
 
-  <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
-  <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
+  <div class="action-buttons">
+    <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
+    <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
+  </div>
 
   <audio id="audioPlayer"></audio>
   <script>
