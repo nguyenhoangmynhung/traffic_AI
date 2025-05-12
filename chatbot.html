@@ -79,7 +79,7 @@
     }
   </style>
 
-  <!-- ✅ Firebase compat (JS xử lý riêng trong chatbot.js) -->
+  <!-- ✅ Firebase CDN compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
@@ -97,12 +97,14 @@
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer"></div>
+  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
-  <!-- ✅ JS xử lý chính -->
-   <script>
+  <!-- ✅ Gọi logic sau khi DOM và Firebase đã sẵn -->
+  <script src="chatbot.js"></script>
+
+  <script>
     const tenDangNhap = localStorage.getItem("tenDangNhap");
     const userPanel = document.getElementById("userPanel");
 
@@ -113,21 +115,20 @@
       `;
     } else {
       userPanel.innerHTML = `
-        <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> |
-        <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
+        <a href="dangnhap.html" onclick="luuTrangTruoc()">🔐 Đăng nhập</a> |
+        <a href="dangky.html" onclick="luuTrangTruoc()">📝 Đăng ký</a>
       `;
     }
 
     function dangXuat() {
       localStorage.removeItem("maND");
       localStorage.removeItem("tenDangNhap");
-      location.reload(); // ở lại trang
+      location.reload();
     }
 
     function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
   </script>
-   <script src="chatbot.js"></script>
 </body>
 </html>
