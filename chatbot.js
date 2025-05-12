@@ -1,6 +1,3 @@
-// ✅ KHÔNG khai báo lại firebaseConfig ở đây (đã có trong HTML)
-const db = firebase.firestore();
-
 document.addEventListener("DOMContentLoaded", function () {
     const inputField = document.getElementById("questionInput");
     const sendButton = document.getElementById("sendButton");
