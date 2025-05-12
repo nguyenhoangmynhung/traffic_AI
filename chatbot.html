@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Học với Chatbot AI</title>
   <style>
     body {
@@ -9,6 +9,7 @@
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
     }
+
     .chat-container {
       width: 500px;
       margin: auto;
@@ -17,6 +18,7 @@
       color: white;
       border-radius: 10px;
     }
+
     input {
       width: 70%;
       padding: 10px;
@@ -24,6 +26,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
     button {
       padding: 10px;
       font-size: 16px;
@@ -32,28 +35,35 @@
       border-radius: 5px;
       margin: 5px;
     }
+
     #sendButton {
       background-color: orange;
       color: white;
     }
+
     #sendButton:hover {
       background-color: darkorange;
     }
+
     #voiceButton {
       background-color: #ff4081;
       color: white;
     }
+
     #voiceButton:hover {
       background-color: #d81b60;
     }
+
     .back-btn {
       margin-top: 20px;
       background-color: #ff4500;
       color: white;
     }
+
     .back-btn:hover {
       background-color: #d73814;
     }
+
     .info-box {
       margin-top: 20px;
       padding: 15px;
@@ -63,6 +73,7 @@
       font-size: 16px;
       text-align: left;
     }
+
     .info-box img {
       max-width: 100%;
       height: auto;
@@ -70,6 +81,7 @@
       border: 2px solid white;
       border-radius: 6px;
     }
+
     .info-box strong {
       color: #ffeb3b;
     }
@@ -98,20 +110,21 @@
 
   <div class="chat-container">
     <h3>Nhập hoặc nói mã biển báo:</h3>
-    <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
+    <input type="text" id="questionInput" placeholder="Nhập mã biển báo...">
     <button id="sendButton">Gửi</button>
     <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
     <div id="chatbotResponse" class="info-box"></div>
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer"></div>
+  <div id="chatHistoryContainer" class="info-box"></div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
-  <!-- ✅ Phải để sau Firebase -->
+  <!-- ✅ Gọi chatbot.js sau khi Firebase đã sẵn sàng -->
   <script src="chatbot.js"></script>
 
+  <!-- Đăng nhập / đăng xuất -->
   <script>
     const tenDangNhap = localStorage.getItem("tenDangNhap");
     const userPanel = document.getElementById("userPanel");
@@ -123,7 +136,7 @@
       `;
     } else {
       userPanel.innerHTML = `
-        <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> |
+        <a href="dangnhap.html" onclick="luuTrangTruoc(event)">🔐 Đăng nhập</a> | 
         <a href="dangky.html" onclick="luuTrangTruoc(event)">📝 Đăng ký</a>
       `;
     }
