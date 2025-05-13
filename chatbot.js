@@ -29,64 +29,67 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-async function sendQuestion() {
-  const rawText = inputField.value.trim();
-  if (!rawText) return alert("⚠️ Vui lòng nhập nội dung!");
+  async function sendQuestion() {
+    const rawText = inputField.value.trim();
+    if (!rawText) return alert("⚠️ Vui lòng nhập mã hoặc tên biển báo!");
 
-  responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
-  const maND = localStorage.getItem("maND");
-  let traLoi = "";
+    responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
+    const queryText = rawText.toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
+    const maND = localStorage.getItem("maND");
+    let traLoi = "";
 
-  try {
-    // 👉 Tách mã biển (nếu có) từ chuỗi người dùng nhập, ví dụ: "Biển báo R305"
-    const matchedMaBien = rawText.toUpperCase().match(/[A-Z]\d{2,3}[A-Z]?/);
-    const ma = matchedMaBien ? matchedMaBien[0] : "";
+    try {
+      let snapshot = await db.collection("BienBao")
+        .where("MaBien", "==", queryText)
+        .limit(1)
+        .get();
 
-    let snapshot = null;
+      if (snapshot.empty) {
+        const allDocs = await db.collection("BienBao").get();
+        const matched = allDocs.docs.find(doc => {
+          const data = doc.data();
+          return rawText.toUpperCase().includes(data.MaBien.toUpperCase()) ||
+                 data.TenBien?.toUpperCase().includes(rawText.toUpperCase());
+        });
+        if (matched) snapshot = { empty: false, docs: [matched] };
+      }
 
-    if (ma) {
-      snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
-    }
+      if (snapshot.empty) {
+        traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
+        responseContainer.innerHTML = `❌ ${traLoi}`;
+        speakText(traLoi);
+        return;
+      }
 
-    if (!snapshot || snapshot.empty) {
-      // Nếu không có mã rõ ràng hoặc không tìm thấy mã -> tìm theo tên biển gần đúng
-      const all = await db.collection("BienBao").get();
-      const matched = all.docs.find(doc =>
-        doc.data().TenBien?.toLowerCase().includes(rawText.toLowerCase())
-      );
-      if (matched) snapshot = { empty: false, docs: [matched] };
-    }
-
-    if (!snapshot || snapshot.empty) {
-      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
-      responseContainer.innerHTML = `❌ ${traLoi}`;
-      speakText(traLoi);
-    } else {
       const data = snapshot.docs[0].data();
+      const hinh = data.HinhAnh ?
+        `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" 
+              alt="Biển báo" 
+              style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
+        : "";
 
-      // 🔄 Lấy TenLoai từ bảng LoaiBien
       let tenLoai = "Chưa xác định";
       if (data.MaLoai) {
-        const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
-        if (loaiSnap.exists) {
-          tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+        try {
+          const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
+          if (loaiSnap.exists) tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+        } catch (e) {
+          console.warn("Không lấy được tên loại biển:", e);
         }
       }
 
       traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-     let imgTag = '';
-     if (data.HinhAnh) {
-        const imgUrl = `https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}`;
-        imgTag = `<img src="${imgUrl}" alt="Hình ảnh biển báo" 
-             style="max-width:200px; display:block; margin:10px auto;" />`;
-      }
       const html = `
-         ${imgTag}
-        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-        📘 <strong>Tên:</strong> ${data.TenBien}<br>
-        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+          ${hinh}
+          <div>
+            <h4>⚠️ <strong>Biển báo ${data.MaBien}</strong></h4>
+            <p>📘 <strong>Tên:</strong> ${data.TenBien}</p>
+            <p>📝 <strong>Mô tả:</strong> ${data.MoTa}</p>
+            <p>💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}</p>
+            <p>📌 <strong>Loại biển:</strong> ${tenLoai}</p>
+          </div>
+        </div>`;
 
       responseContainer.innerHTML = html;
       speakText(traLoi);
@@ -99,12 +102,12 @@ async function sendQuestion() {
           ThoiGian: new Date().toISOString()
         });
       }
+    } catch (err) {
+      console.error("❌ Lỗi tìm kiếm:", err);
+      responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
     }
-  } catch (err) {
-    console.error("❌ Lỗi tìm kiếm:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
-}
+
   function speakText(text) {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "vi-VN";
@@ -116,7 +119,7 @@ async function sendQuestion() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "vi-VN";
     recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript.trim();
+      const transcript = event.results[0][0].transcript.trim().replace(/\.$/, "");
       inputField.value = transcript;
       sendQuestion();
     };
@@ -133,7 +136,8 @@ async function sendQuestion() {
       const snapshot = await db.collection("ChatLog")
         .where("MaND", "==", maND)
         .orderBy("ThoiGian", "desc")
-        .limit(10).get();
+        .limit(10)
+        .get();
 
       if (snapshot.empty) {
         container.innerHTML = "📭 Chưa có lịch sử hỏi đáp.";
@@ -159,5 +163,6 @@ async function sendQuestion() {
     }
   }
 });
+
 
    
