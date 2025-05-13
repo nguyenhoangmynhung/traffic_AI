@@ -29,30 +29,30 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-  async function sendQuestion() {
-  const rawInput = inputField.value.trim();
-  if (!rawInput) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
-
-  const queryText = rawInput.toUpperCase().normalize("NFC");
-  const cleanedText = queryText.replace(/\s+/g, "");
-  const maMatch = cleanedText.match(/[A-Z]\d{2,3}[A-Z]?/);
-  const maFromInput = maMatch ? maMatch[0] : "";
+ async function sendQuestion() {
+  const rawText = inputField.value.trim();
+  if (!rawText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
   responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
   const maND = localStorage.getItem("maND");
   let traLoi = "";
-  let snapshot = null;
 
   try {
-    // Ưu tiên tìm theo mã biển nếu có
+    // Chuẩn hóa chuỗi đầu vào
+    const queryText = rawText.toUpperCase().normalize("NFC");
+
+    // 1. Tìm Mã biển (cho phép có dấu cách, ví dụ: R 3 0 5)
+    const maMatch = queryText.match(/[A-Z]\s*\d{2,3}\s*[A-Z]?/);
+    const maFromInput = maMatch ? maMatch[0].replace(/\s+/g, '') : "";
+
+    let snapshot = null;
+
+    // 2. Nếu có MaBien -> truy vấn theo mã
     if (maFromInput) {
-      snapshot = await db.collection("BienBao")
-        .where("MaBien", "==", maFromInput)
-        .limit(1)
-        .get();
+      snapshot = await db.collection("BienBao").where("MaBien", "==", maFromInput).limit(1).get();
     }
 
-    // Nếu không có hoặc không tìm được, tìm theo tên gần đúng
+    // 3. Nếu không có hoặc không tìm thấy, thử tìm theo TenBien gần đúng
     if (!snapshot || snapshot.empty) {
       const all = await db.collection("BienBao").get();
       const matched = all.docs.find(doc =>
@@ -63,43 +63,42 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Không tìm thấy kết quả
+    // 4. Nếu vẫn không tìm thấy
     if (!snapshot || snapshot.empty) {
-      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawInput}`;
+      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
       responseContainer.innerHTML = `❌ ${traLoi}`;
       speakText(traLoi);
-      return;
-    }
+    } else {
+      const data = snapshot.docs[0].data();
 
-    // Có kết quả
-    const data = snapshot.docs[0].data();
-
-    // Lấy tên loại từ bảng LoaiBien nếu có MaLoai
-    let tenLoai = "Chưa xác định";
-    if (data.MaLoai) {
-      const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
-      if (loaiSnap.exists) {
-        tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+      // Tìm loại biển
+      let tenLoai = "Chưa xác định";
+      if (data.MaLoai) {
+        const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
+        if (loaiRef.exists) {
+          tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+        }
       }
-    }
 
-    traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-    const html = `
-      ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-      📘 <strong>Tên:</strong> ${data.TenBien}<br>
-      📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-      💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-      📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
-    responseContainer.innerHTML = html;
-    speakText(traLoi);
+      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+      const html = `
+        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+        📘 <strong>Tên:</strong> ${data.TenBien}<br>
+        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+      responseContainer.innerHTML = html;
+      speakText(traLoi);
 
-    if (maND) {
-      await db.collection("ChatLog").add({
-        MaND: maND,
-        CauHoi: rawInput,
-        TraLoi: traLoi,
-        ThoiGian: new Date().toISOString()
-      });
+      // Lưu lịch sử nếu có người dùng
+      if (maND) {
+        await db.collection("ChatLog").add({
+          MaND: maND,
+          CauHoi: rawText,
+          TraLoi: traLoi,
+          ThoiGian: new Date().toISOString()
+        });
+      }
     }
 
   } catch (err) {
