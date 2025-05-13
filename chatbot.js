@@ -34,23 +34,27 @@ async function sendQuestion() {
   if (!rawText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
   responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
-  const queryText = rawText.toUpperCase().normalize("NFC");
+  const queryText = rawText.toUpperCase().normalize("NFC").replace(/[.,?!]/g, "");
+
   const maND = localStorage.getItem("maND");
   let traLoi = "";
 
   try {
-    // 👉 Tách mã biển từ câu (ví dụ R305, R 3 0 5, P112A)
-    const match = queryText.match(/[A-Z]\s*\d{2,3}[A-Z]?/);
+    // 👉 Tách mã biển từ câu, ví dụ "R305", "R 3 0 5", "P 1 1 2 A"
+    const match = queryText.match(/[A-Z](\s*\d){2,3}\s*[A-Z]?/);
     const maBien = match ? match[0].replace(/\s+/g, "") : "";
 
     let snapshot = null;
 
-    // Ưu tiên tìm theo MaBien
+    // Ưu tiên tìm theo mã biển
     if (maBien) {
-      snapshot = await db.collection("BienBao").where("MaBien", "==", maBien).limit(1).get();
+      snapshot = await db.collection("BienBao")
+        .where("MaBien", "==", maBien)
+        .limit(1)
+        .get();
     }
 
-    // Nếu không có mã hợp lệ hoặc không tìm thấy mã đó → tìm theo tên biển
+    // Nếu không có kết quả từ mã, tìm theo Tên biển
     if (!snapshot || snapshot.empty) {
       const all = await db.collection("BienBao").get();
       const matched = all.docs.find(doc =>
@@ -59,19 +63,16 @@ async function sendQuestion() {
       if (matched) snapshot = { empty: false, docs: [matched] };
     }
 
-    // Không tìm thấy gì
     if (!snapshot || snapshot.empty) {
-      traLoi = `Không tìm thấy thông tin phù hợp với câu hỏi "${rawText}"`;
+      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
       responseContainer.innerHTML = `❌ ${traLoi}`;
       speakText(traLoi);
       return;
     }
 
-    // Lấy dữ liệu biển báo
     const data = snapshot.docs[0].data();
-
-    // Lấy tên loại biển
     let tenLoai = "Chưa xác định";
+
     if (data.MaLoai) {
       const loaiDoc = await db.collection("LoaiBien").doc(data.MaLoai).get();
       if (loaiDoc.exists) {
@@ -79,19 +80,16 @@ async function sendQuestion() {
       }
     }
 
-    // Trả lời và hiển thị
     traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
     const html = `
       ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
       📘 <strong>Tên:</strong> ${data.TenBien}<br>
       📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
       💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-      📌 <strong>Loại biển:</strong> ${tenLoai}<br>
-    `;
+      📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
     responseContainer.innerHTML = html;
     speakText(traLoi);
 
-    // Lưu lịch sử nếu có người dùng
     if (maND) {
       await db.collection("ChatLog").add({
         MaND: maND,
