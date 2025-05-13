@@ -81,6 +81,7 @@ async function sendQuestion() {
 
     traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
     const html = `
+      <img src="${data.HinhAnh || '#'}" alt="Hình ảnh biển báo" style="max-width: 200px; display: block; margin: 10px auto;">
       ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
       📘 <strong>Tên:</strong> ${data.TenBien}<br>
       📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
