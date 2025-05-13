@@ -30,56 +30,29 @@ document.addEventListener("DOMContentLoaded", () => {
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
   async function sendQuestion() {
-    const queryText = inputField.value.trim().toUpperCase();
-    if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
+    const ma = inputField.value.trim().toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
+    if (!ma) return alert("⚠️ Vui lòng nhập mã biển báo!");
 
     responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
-    const maND = localStorage.getItem("maND");
-    let traLoi = "";
 
     try {
-      const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // ví dụ: R305, P112A
-      const ma = maMatch ? maMatch[0] : "";
-
-      let snapshot = await db.collection("BienBao")
-        .where("MaBien", "==", ma)
-        .limit(1)
-        .get();
+      const snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
+      const maND = localStorage.getItem("maND");
+      let traLoi = "";
 
       if (snapshot.empty) {
-        const all = await db.collection("BienBao").get();
-        const matched = all.docs.find(doc =>
-          doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
-        );
-        if (matched) snapshot = { empty: false, docs: [matched] };
-      }
-
-      if (snapshot.empty) {
-        traLoi = `Không tìm thấy mã biển báo ${queryText}`;
+        traLoi = `Không tìm thấy mã biển báo ${ma}`;
         responseContainer.innerHTML = `❌ ${traLoi}`;
         speakText(traLoi);
       } else {
         const data = snapshot.docs[0].data();
-        let tenLoai = "Chưa xác định";
-
-        if (data.MaLoai) {
-          try {
-            const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
-            if (loaiRef.exists) {
-              tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
-            }
-          } catch (err) {
-            console.warn("⚠️ Không thể truy vấn loại biển:", err);
-          }
-        }
-
         traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
         const html = `
           ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
           📘 <strong>Tên:</strong> ${data.TenBien}<br>
           📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
           💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-          📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+          📌 <strong>Loại biển:</strong> ${data.TenLoai || 'Chưa xác định'}<br>`;
         responseContainer.innerHTML = html;
         speakText(traLoi);
       }
@@ -87,11 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (maND) {
         await db.collection("ChatLog").add({
           MaND: maND,
-          CauHoi: queryText,
+          CauHoi: ma,
           TraLoi: traLoi,
           ThoiGian: new Date().toISOString()
         });
       }
+
     } catch (err) {
       console.error("❌ Lỗi tìm kiếm:", err);
       responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
@@ -113,9 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
       inputField.value = transcript;
       sendQuestion();
     };
-    recognition.onerror = () => {
-      responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
-    };
+    recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
     recognition.start();
   }
 
@@ -128,8 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const snapshot = await db.collection("ChatLog")
         .where("MaND", "==", maND)
         .orderBy("ThoiGian", "desc")
-        .limit(10)
-        .get();
+        .limit(10).get();
 
       if (snapshot.empty) {
         container.innerHTML = "📭 Chưa có lịch sử hỏi đáp.";
@@ -148,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       html += "</ul>";
       container.innerHTML = html;
+
     } catch (err) {
       console.error("❌ Lỗi lịch sử:", err);
       container.innerHTML = "❌ Không thể tải lịch sử!";
