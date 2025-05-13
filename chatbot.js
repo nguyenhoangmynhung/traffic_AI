@@ -1,4 +1,4 @@
-// Khởi tạo Firebase (nếu chưa có)
+// Khởi tạo Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBGzcRnvcrfSaejw_FPQZdmgbC76nX_XEo",
   authDomain: "trafficai-2a2d6.firebaseapp.com",
@@ -29,87 +29,82 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
- async function sendQuestion() {
-  const rawText = inputField.value.trim();
-  if (!rawText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
+  async function sendQuestion() {
+    const rawText = inputField.value.trim();
+    if (!rawText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
-  responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
-  const maND = localStorage.getItem("maND");
-  let traLoi = "";
-
-  try {
+    responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
     const queryText = rawText.toUpperCase().normalize("NFC");
+    const maND = localStorage.getItem("maND");
+    let traLoi = "";
 
-    // 👉 Tìm xem người dùng có nhập mã biển như R305 hoặc R 3 0 5
-    const maMatch = queryText.match(/[A-Z]\s*\d{2,3}\s*[A-Z]?/);
-    const possibleMaBien = maMatch ? maMatch[0].replace(/\s+/g, '') : "";
+    try {
+      const maMatch = queryText.match(/[A-Z]\s*\d{2,3}[A-Z]?/); // ví dụ R 305 A
+      const possibleMa = maMatch ? maMatch[0].replace(/\s+/g, "") : "";
 
-    let snapshot = null;
+      let snapshot = null;
 
-    // ⚠️ Nếu có mã hợp lệ => tìm theo MaBien
-    if (possibleMaBien) {
-      snapshot = await db.collection("BienBao")
-        .where("MaBien", "==", possibleMaBien)
-        .limit(1)
-        .get();
-    }
-
-    // 🔍 Nếu chưa có kết quả => tìm theo TenBien (gần đúng)
-    if (!snapshot || snapshot.empty) {
-      const all = await db.collection("BienBao").get();
-      const matched = all.docs.find(doc =>
-        doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
-      );
-      if (matched) {
-        snapshot = { empty: false, docs: [matched] };
+      // Ưu tiên tìm theo mã
+      if (possibleMa) {
+        snapshot = await db.collection("BienBao")
+          .where("MaBien", "==", possibleMa)
+          .limit(1).get();
       }
-    }
 
-    // ❌ Nếu không tìm thấy
-    if (!snapshot || snapshot.empty) {
-      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
-      responseContainer.innerHTML = `❌ ${traLoi}`;
+      // Nếu không có mã hoặc không tìm ra thì tìm theo tên biển
+      if (!snapshot || snapshot.empty) {
+        const all = await db.collection("BienBao").get();
+        const match = all.docs.find(doc =>
+          doc.data().TenBien?.toUpperCase().includes(queryText)
+        );
+        if (match) {
+          snapshot = { empty: false, docs: [match] };
+        }
+      }
+
+      // Nếu vẫn không có
+      if (!snapshot || snapshot.empty) {
+        traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
+        responseContainer.innerHTML = `❌ ${traLoi}`;
+        speakText(traLoi);
+        return;
+      }
+
+      const data = snapshot.docs[0].data();
+      let tenLoai = "Chưa xác định";
+
+      if (data.MaLoai) {
+        const loaiDoc = await db.collection("LoaiBien").doc(data.MaLoai).get();
+        if (loaiDoc.exists) {
+          tenLoai = loaiDoc.data().TenLoai || "Chưa xác định";
+        }
+      }
+
+      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+      const html = `
+        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+        📘 <strong>Tên:</strong> ${data.TenBien}<br>
+        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+        📌 <strong>Loại biển:</strong> ${tenLoai}<br>
+      `;
+      responseContainer.innerHTML = html;
       speakText(traLoi);
-      return;
-    }
 
-    // ✅ Nếu tìm thấy biển báo
-    const data = snapshot.docs[0].data();
-    let tenLoai = "Chưa xác định";
-
-    // 🔗 Lấy thông tin loại biển (từ bảng LoaiBien)
-    if (data.MaLoai) {
-      const loaiDoc = await db.collection("LoaiBien").doc(data.MaLoai).get();
-      if (loaiDoc.exists) {
-        tenLoai = loaiDoc.data().TenLoai || "Chưa xác định";
+      if (maND) {
+        await db.collection("ChatLog").add({
+          MaND: maND,
+          CauHoi: rawText,
+          TraLoi: traLoi,
+          ThoiGian: new Date().toISOString()
+        });
       }
+    } catch (err) {
+      console.error("❌ Lỗi tìm kiếm:", err);
+      responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
     }
-
-    traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-    const html = `
-      ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-      📘 <strong>Tên:</strong> ${data.TenBien}<br>
-      📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-      💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-      📌 <strong>Loại biển:</strong> ${tenLoai}<br>
-    `;
-    responseContainer.innerHTML = html;
-    speakText(traLoi);
-
-    if (maND) {
-      await db.collection("ChatLog").add({
-        MaND: maND,
-        CauHoi: rawText,
-        TraLoi: traLoi,
-        ThoiGian: new Date().toISOString()
-      });
-    }
-
-  } catch (err) {
-    console.error("❌ Lỗi tìm kiếm:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
-}
+
   function speakText(text) {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "vi-VN";
@@ -125,7 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
       inputField.value = transcript;
       sendQuestion();
     };
-    recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
+    recognition.onerror = () => {
+      responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
+    };
     recognition.start();
   }
 
@@ -157,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       html += "</ul>";
       container.innerHTML = html;
-
     } catch (err) {
       console.error("❌ Lỗi lịch sử:", err);
       container.innerHTML = "❌ Không thể tải lịch sử!";
