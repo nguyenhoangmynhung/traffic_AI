@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let traLoi = "";
 
     try {
-      const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);
+      const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // ví dụ: R305, P112A
       const ma = maMatch ? maMatch[0] : "";
 
       let snapshot = await db.collection("BienBao")
@@ -63,10 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
         let tenLoai = "Chưa xác định";
 
         if (data.MaLoai) {
-          const loaiId = data.MaLoai.trim().normalize("NFC");
-          const loaiSnap = await db.collection("LoaiBien").doc(loaiId).get();
-          if (loaiSnap.exists) {
-            tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+          try {
+            const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
+            if (loaiRef.exists) {
+              tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+            }
+          } catch (err) {
+            console.warn("⚠️ Không thể truy vấn loại biển:", err);
           }
         }
 
@@ -89,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ThoiGian: new Date().toISOString()
         });
       }
-
     } catch (err) {
       console.error("❌ Lỗi tìm kiếm:", err);
       responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
@@ -111,7 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
       inputField.value = transcript;
       sendQuestion();
     };
-    recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
+    recognition.onerror = () => {
+      responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
+    };
     recognition.start();
   }
 
@@ -144,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       html += "</ul>";
       container.innerHTML = html;
-
     } catch (err) {
       console.error("❌ Lỗi lịch sử:", err);
       container.innerHTML = "❌ Không thể tải lịch sử!";
