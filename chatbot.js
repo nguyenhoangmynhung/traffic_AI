@@ -33,19 +33,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const rawInput = inputField.value.trim();
   if (!rawInput) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
+  const queryText = rawInput.toUpperCase().normalize("NFC");
+  const cleanedText = queryText.replace(/\s+/g, "");
+  const maMatch = cleanedText.match(/[A-Z]\d{2,3}[A-Z]?/);
+  const maFromInput = maMatch ? maMatch[0] : "";
+
   responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
   const maND = localStorage.getItem("maND");
-  const queryText = rawInput.toUpperCase().normalize("NFC");
   let traLoi = "";
+  let snapshot = null;
 
   try {
-    // 👉 Tìm mã biển trong câu hỏi (vd: "Biển báo R305 có ý nghĩa gì")
-    const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // VD: R305, P112A
-    const maFromInput = maMatch ? maMatch[0] : "";
-
-    let snapshot = null;
-
-    // 1. Nếu có mã biển trong câu, ưu tiên tìm theo mã
+    // Ưu tiên tìm theo mã biển nếu có
     if (maFromInput) {
       snapshot = await db.collection("BienBao")
         .where("MaBien", "==", maFromInput)
@@ -53,20 +52,18 @@ document.addEventListener("DOMContentLoaded", () => {
         .get();
     }
 
-    // 2. Nếu không tìm được, hoặc không có mã, tìm theo tên gần đúng
+    // Nếu không có hoặc không tìm được, tìm theo tên gần đúng
     if (!snapshot || snapshot.empty) {
-      const allDocs = await db.collection("BienBao").get();
-      const matchedDoc = allDocs.docs.find(doc => {
-        const ten = doc.data().TenBien?.toUpperCase().normalize("NFC");
-        return ten && queryText.includes(ten);
-      });
-
-      if (matchedDoc) {
-        snapshot = { empty: false, docs: [matchedDoc] };
+      const all = await db.collection("BienBao").get();
+      const matched = all.docs.find(doc =>
+        doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
+      );
+      if (matched) {
+        snapshot = { empty: false, docs: [matched] };
       }
     }
 
-    // 3. Nếu vẫn không có thì báo lỗi
+    // Không tìm thấy kết quả
     if (!snapshot || snapshot.empty) {
       traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawInput}`;
       responseContainer.innerHTML = `❌ ${traLoi}`;
@@ -74,14 +71,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 4. Lấy dữ liệu & tìm loại biển
+    // Có kết quả
     const data = snapshot.docs[0].data();
-    let tenLoai = "Chưa xác định";
 
+    // Lấy tên loại từ bảng LoaiBien nếu có MaLoai
+    let tenLoai = "Chưa xác định";
     if (data.MaLoai) {
-      const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
-      if (loaiRef.exists) {
-        tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+      const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
+      if (loaiSnap.exists) {
+        tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
       }
     }
 
@@ -95,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     responseContainer.innerHTML = html;
     speakText(traLoi);
 
-    // 5. Lưu lịch sử nếu có người dùng
     if (maND) {
       await db.collection("ChatLog").add({
         MaND: maND,
@@ -106,8 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   } catch (err) {
-    console.error("❌ Lỗi xử lý:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc xử lý dữ liệu!";
+    console.error("❌ Lỗi tìm kiếm:", err);
+    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
 }
   function speakText(text) {
