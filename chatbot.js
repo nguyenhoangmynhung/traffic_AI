@@ -74,10 +74,14 @@ async function sendQuestion() {
       }
 
       traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-      const imgUrl = `https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh || ''}`;
+     let imgTag = '';
+     if (data.HinhAnh) {
+        const imgUrl = `https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}`;
+        imgTag = `<img src="${imgUrl}" alt="Hình ảnh biển báo" 
+             style="max-width:200px; display:block; margin:10px auto;" />`;
+      }
       const html = `
-        <img src="${imgUrl}" alt="Biển báo" 
-             style="max-width:200px; display:block; margin:10px auto;" />
+         ${imgTag}
         ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
         📘 <strong>Tên:</strong> ${data.TenBien}<br>
         📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
