@@ -30,67 +30,78 @@ document.addEventListener("DOMContentLoaded", () => {
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
   async function sendQuestion() {
-  const queryText = inputField.value.trim().toUpperCase();
-  if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
+  const rawInput = inputField.value.trim();
+  if (!rawInput) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
+  const queryText = rawInput.toUpperCase().normalize("NFC");
   responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
   const maND = localStorage.getItem("maND");
   let traLoi = "";
 
   try {
-    const maMatch = queryText.replace(/\s+/g, "").replace(/\./g, "");
+    // Loại bỏ khoảng trắng và dấu chấm nếu có (ví dụ: "P 102." → "P102")
+    const maBienClean = queryText.replace(/\s+/g, "").replace(/\./g, "");
+
+    // 1. Thử tìm theo MaBien
     let snapshot = await db.collection("BienBao")
-      .where("MaBien", "==", maMatch)
+      .where("MaBien", "==", maBienClean)
       .limit(1)
       .get();
 
-    // Nếu không tìm thấy theo MaBien, thử tìm theo TenBien gần đúng
+    // 2. Nếu không có, tìm theo TenBien gần đúng
     if (snapshot.empty) {
-      const all = await db.collection("BienBao").get();
-      const matched = all.docs.find(doc =>
-        doc.data().TenBien?.toUpperCase().includes(queryText)
+      const allDocs = await db.collection("BienBao").get();
+      const matchedDoc = allDocs.docs.find(doc =>
+        doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
       );
-      if (matched) snapshot = { empty: false, docs: [matched] };
+
+      if (matchedDoc) {
+        snapshot = { empty: false, docs: [matchedDoc] };
+      }
     }
 
+    // 3. Nếu vẫn không có -> báo lỗi
     if (snapshot.empty) {
-      traLoi = `Không tìm thấy mã biển báo ${queryText}`;
+      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawInput}`;
       responseContainer.innerHTML = `❌ ${traLoi}`;
       speakText(traLoi);
-    } else {
-      const data = snapshot.docs[0].data();
-      let tenLoai = "Chưa xác định";
+      return;
+    }
 
-      if (data.MaLoai) {
-        const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
-        if (loaiRef.exists) {
-          tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
-        }
-      }
+    // 4. Có dữ liệu → hiển thị thông tin
+    const data = snapshot.docs[0].data();
 
-      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-      const html = `
-        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-        📘 <strong>Tên:</strong> ${data.TenBien}<br>
-        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
-      responseContainer.innerHTML = html;
-      speakText(traLoi);
-
-      // Ghi log
-      if (maND) {
-        await db.collection("ChatLog").add({
-          MaND: maND,
-          CauHoi: queryText,
-          TraLoi: traLoi,
-          ThoiGian: new Date().toISOString()
-        });
+    let tenLoai = "Chưa xác định";
+    if (data.MaLoai) {
+      const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
+      if (loaiRef.exists) {
+        tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
       }
     }
+
+    traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+    const html = `
+      ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+      📘 <strong>Tên:</strong> ${data.TenBien}<br>
+      📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+      💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+      📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+    responseContainer.innerHTML = html;
+    speakText(traLoi);
+
+    // 5. Ghi log
+    if (maND) {
+      await db.collection("ChatLog").add({
+        MaND: maND,
+        CauHoi: rawInput,
+        TraLoi: traLoi,
+        ThoiGian: new Date().toISOString()
+      });
+    }
+
   } catch (err) {
-    console.error("❌ Lỗi tìm kiếm:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
+    console.error("❌ Lỗi xử lý:", err);
+    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc xử lý dữ liệu!";
   }
 }
   function speakText(text) {
