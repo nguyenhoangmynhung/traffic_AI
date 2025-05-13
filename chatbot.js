@@ -30,79 +30,75 @@ document.addEventListener("DOMContentLoaded", () => {
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
 async function sendQuestion() {
-  const rawInput = inputField.value.trim();
-  if (!rawInput) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
+  const rawText = inputField.value.trim();
+  if (!rawText) return alert("⚠️ Vui lòng nhập nội dung!");
 
-  const queryText = rawInput.toUpperCase().normalize("NFC");
   responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
   const maND = localStorage.getItem("maND");
   let traLoi = "";
 
   try {
-    // Loại bỏ khoảng trắng và dấu chấm nếu có (ví dụ: "P 102." → "P102")
-    const maBienClean = queryText.replace(/\s+/g, "").replace(/\./g, "");
+    // 👉 Tách mã biển (nếu có) từ chuỗi người dùng nhập, ví dụ: "Biển báo R305"
+    const matchedMaBien = rawText.toUpperCase().match(/[A-Z]\d{2,3}[A-Z]?/);
+    const ma = matchedMaBien ? matchedMaBien[0] : "";
 
-    // 1. Thử tìm theo MaBien
-    let snapshot = await db.collection("BienBao")
-      .where("MaBien", "==", maBienClean)
-      .limit(1)
-      .get();
+    let snapshot = null;
 
-    // 2. Nếu không có, tìm theo TenBien gần đúng
-    if (snapshot.empty) {
-      const allDocs = await db.collection("BienBao").get();
-      const matchedDoc = allDocs.docs.find(doc =>
-        doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
-      );
-
-      if (matchedDoc) {
-        snapshot = { empty: false, docs: [matchedDoc] };
-      }
+    if (ma) {
+      snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
     }
 
-    // 3. Nếu vẫn không có -> báo lỗi
-    if (snapshot.empty) {
-      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawInput}`;
+    if (!snapshot || snapshot.empty) {
+      // Nếu không có mã rõ ràng hoặc không tìm thấy mã -> tìm theo tên biển gần đúng
+      const all = await db.collection("BienBao").get();
+      const matched = all.docs.find(doc =>
+        doc.data().TenBien?.toLowerCase().includes(rawText.toLowerCase())
+      );
+      if (matched) snapshot = { empty: false, docs: [matched] };
+    }
+
+    if (!snapshot || snapshot.empty) {
+      traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
       responseContainer.innerHTML = `❌ ${traLoi}`;
       speakText(traLoi);
-      return;
-    }
+    } else {
+      const data = snapshot.docs[0].data();
 
-    // 4. Có dữ liệu → hiển thị thông tin
-    const data = snapshot.docs[0].data();
+      // 🔄 Lấy TenLoai từ bảng LoaiBien
+      let tenLoai = "Chưa xác định";
+      if (data.MaLoai) {
+        const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
+        if (loaiSnap.exists) {
+          tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+        }
+      }
 
-    let tenLoai = "Chưa xác định";
-    if (data.MaLoai) {
-      const loaiRef = await db.collection("LoaiBien").doc(data.MaLoai).get();
-      if (loaiRef.exists) {
-        tenLoai = loaiRef.data().TenLoai || "Chưa xác định";
+      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+      const imgUrl = `https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh || ''}`;
+      const html = `
+        <img src="${imgUrl}" alt="Biển báo" 
+             style="max-width:200px; display:block; margin:10px auto;" />
+        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+        📘 <strong>Tên:</strong> ${data.TenBien}<br>
+        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+
+      responseContainer.innerHTML = html;
+      speakText(traLoi);
+
+      if (maND) {
+        await db.collection("ChatLog").add({
+          MaND: maND,
+          CauHoi: rawText,
+          TraLoi: traLoi,
+          ThoiGian: new Date().toISOString()
+        });
       }
     }
-
-    traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-    const html = `
-      <img src="${data.HinhAnh || '#'}" alt="Hình ảnh biển báo" style="max-width: 200px; display: block; margin: 10px auto;">
-      ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-      📘 <strong>Tên:</strong> ${data.TenBien}<br>
-      📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-      💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-      📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
-    responseContainer.innerHTML = html;
-    speakText(traLoi);
-
-    // 5. Ghi log
-    if (maND) {
-      await db.collection("ChatLog").add({
-        MaND: maND,
-        CauHoi: rawInput,
-        TraLoi: traLoi,
-        ThoiGian: new Date().toISOString()
-      });
-    }
-
   } catch (err) {
-    console.error("❌ Lỗi xử lý:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc xử lý dữ liệu!";
+    console.error("❌ Lỗi tìm kiếm:", err);
+    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
 }
   function speakText(text) {
