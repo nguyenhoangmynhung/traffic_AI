@@ -29,75 +29,78 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-async function sendQuestion() {
-  const queryText = inputField.value.trim().toUpperCase();
-  if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
+  async function sendQuestion() {
+    const queryText = inputField.value.trim().toUpperCase();
+    if (!queryText) return alert("⚠️ Vui lòng nhập nội dung cần hỏi!");
 
-  responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
-  const maND = localStorage.getItem("maND");
-  let traLoi = "";
+    responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
+    const maND = localStorage.getItem("maND");
+    let traLoi = "";
 
-  try {
-    const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // ví dụ: R305, P112A
-    const ma = maMatch ? maMatch[0] : "";
+    try {
+      const maMatch = queryText.match(/[A-Z]\d{2,3}[A-Z]?/);  // ví dụ: R305, P112A
+      const ma = maMatch ? maMatch[0] : "";
 
-    let snapshot = await db.collection("BienBao")
-      .where("MaBien", "==", ma)
-      .limit(1)
-      .get();
+      let snapshot = await db.collection("BienBao")
+        .where("MaBien", "==", ma)
+        .limit(1)
+        .get();
 
-    // Nếu không có mã, tìm theo tên gần đúng
-    if (snapshot.empty) {
-      const all = await db.collection("BienBao").get();
-      const matched = all.docs.find(doc =>
-        doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
-      );
-      if (matched) snapshot = { empty: false, docs: [matched] };
-    }
-
-    if (snapshot.empty) {
-      traLoi = `Không tìm thấy mã biển báo ${queryText}`;
-      responseContainer.innerHTML = `❌ ${traLoi}`;
-      speakText(traLoi);
-    } else {
-      const data = snapshot.docs[0].data();
-      let tenLoai = "Chưa xác định";
-
-      if (data.MaLoai) {
-        try {
-          const loaiDoc = await db.collection("LoaiBien").doc(data.MaLoai).get();
-          if (loaiDoc.exists) {
-            tenLoai = loaiDoc.data().TenLoai || "Chưa xác định";
-          }
-        } catch (err) {
-          console.error("❌ Lỗi lấy loại biển:", err);
-        }
+      // Nếu không có mã, tìm theo tên gần đúng
+      if (snapshot.empty) {
+        const all = await db.collection("BienBao").get();
+        const matched = all.docs.find(doc =>
+          doc.data().TenBien?.toUpperCase().normalize("NFC").includes(queryText)
+        );
+        if (matched) snapshot = { empty: false, docs: [matched] };
       }
 
-      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-      const html = `
-        ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-        📘 <strong>Tên:</strong> ${data.TenBien}<br>
-        📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-        💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-        📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
-      responseContainer.innerHTML = html;
-      speakText(traLoi);
-    }
+      if (snapshot.empty) {
+        traLoi = `Không tìm thấy mã biển báo ${queryText}`;
+        responseContainer.innerHTML = `❌ ${traLoi}`;
+        speakText(traLoi);
+      } else {
+        const data = snapshot.docs[0].data();
+        let tenLoai = "Chưa xác định";
 
-    if (maND) {
-      await db.collection("ChatLog").add({
-        MaND: maND,
-        CauHoi: queryText,
-        TraLoi: traLoi,
-        ThoiGian: new Date().toISOString()
-      });
+        // ✅ Lấy loại biển từ collection LoaiBien (theo MaLoai)
+        const maLoai = data.MaLoai?.trim();
+        if (maLoai) {
+          try {
+            const loaiDoc = await db.collection("LoaiBien").doc(maLoai).get();
+            if (loaiDoc.exists) {
+              tenLoai = loaiDoc.data().TenLoai || "Chưa xác định";
+            }
+          } catch (loaiErr) {
+            console.error("❌ Lỗi lấy loại biển:", loaiErr);
+          }
+        }
+
+        traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+        const html = `
+          ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
+          📘 <strong>Tên:</strong> ${data.TenBien}<br>
+          📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
+          💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
+          📌 <strong>Loại biển:</strong> ${tenLoai}<br>`;
+        responseContainer.innerHTML = html;
+        speakText(traLoi);
+      }
+
+      if (maND) {
+        await db.collection("ChatLog").add({
+          MaND: maND,
+          CauHoi: queryText,
+          TraLoi: traLoi,
+          ThoiGian: new Date().toISOString()
+        });
+      }
+    } catch (err) {
+      console.error("❌ Lỗi tìm kiếm:", err);
+      responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
     }
-  } catch (err) {
-    console.error("❌ Lỗi tìm kiếm:", err);
-    responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
   }
-}
+
   function speakText(text) {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "vi-VN";
@@ -148,6 +151,7 @@ async function sendQuestion() {
       });
       html += "</ul>";
       container.innerHTML = html;
+
     } catch (err) {
       console.error("❌ Lỗi lịch sử:", err);
       container.innerHTML = "❌ Không thể tải lịch sử!";
