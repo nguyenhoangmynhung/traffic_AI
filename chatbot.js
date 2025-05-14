@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("backButton");
   const voiceButton = document.getElementById("voiceButton");
   const viewHistoryBtn = document.getElementById("viewHistoryBtn");
-  const aiButton = document.getElementById("aiButton"); // Nút trợ lý AI mới
+  const aiButton = document.getElementById("aiButton");  // Nút chuyển sang trợ lý AI
+  const bienbaoButton = document.getElementById("bienbaoButton");  // Nút quay lại học biển báo
 
   sendButton?.addEventListener("click", sendQuestion);
   inputField?.addEventListener("keypress", e => {
@@ -30,12 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-  // Nút trợ lý AI mới
-  aiButton?.addEventListener("click", generateAIResponse);
+  // Thêm sự kiện cho nút chuyển chế độ
+  aiButton?.addEventListener("click", switchToAiMode);
+  bienbaoButton?.addEventListener("click", switchToBienBaoMode);
 
   async function sendQuestion() {
     const rawText = inputField.value.trim();
-    if (!rawText) return;
+    if (!rawText) return alert("⚠️ Vui lòng nhập câu hỏi!");
 
     responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
     const queryText = rawText.toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
@@ -43,60 +45,65 @@ document.addEventListener("DOMContentLoaded", () => {
     let traLoi = "";
 
     try {
-      let snapshot = await db.collection("BienBao")
-        .where("MaBien", "==", queryText)
-        .limit(1)
-        .get();
+      if (mode === "bienbao") {  // Chế độ học biển báo
+        let snapshot = await db.collection("BienBao")
+          .where("MaBien", "==", queryText)
+          .limit(1)
+          .get();
 
-      if (snapshot.empty) {
-        const allDocs = await db.collection("BienBao").get();
-        const matched = allDocs.docs.find(doc => {
-          const data = doc.data();
-          return rawText.toUpperCase().includes(data.MaBien.toUpperCase()) ||
-                 data.TenBien?.toUpperCase().includes(rawText.toUpperCase());
-        });
-        if (matched) snapshot = { empty: false, docs: [matched] };
-      }
-
-      if (snapshot.empty) {
-        traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
-        responseContainer.innerHTML = `❌ ${traLoi}`;
-        speakText(traLoi);
-        return;
-      }
-
-      const data = snapshot.docs[0].data();
-      const hinh = data.HinhAnh ? 
-        `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" 
-              alt="Biển báo" 
-              style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
-        : "";
-
-      let tenLoai = "Chưa xác định";
-      if (data.MaLoai) {
-        try {
-          const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
-          if (loaiSnap.exists) tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
-        } catch (e) {
-          console.warn("Không lấy được tên loại biển:", e);
+        if (snapshot.empty) {
+          const allDocs = await db.collection("BienBao").get();
+          const matched = allDocs.docs.find(doc => {
+            const data = doc.data();
+            return rawText.toUpperCase().includes(data.MaBien.toUpperCase()) ||
+                   data.TenBien?.toUpperCase().includes(rawText.toUpperCase());
+          });
+          if (matched) snapshot = { empty: false, docs: [matched] };
         }
+
+        if (snapshot.empty) {
+          traLoi = `Không tìm thấy mã hoặc tên biển báo: ${rawText}`;
+          responseContainer.innerHTML = `❌ ${traLoi}`;
+          speakText(traLoi);
+          return;
+        }
+
+        const data = snapshot.docs[0].data();
+        const hinh = data.HinhAnh ? 
+          `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" alt="Biển báo" style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
+          : "";
+
+        let tenLoai = "Chưa xác định";
+        if (data.MaLoai) {
+          try {
+            const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
+            if (loaiSnap.exists) tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
+          } catch (e) {
+            console.warn("Không lấy được tên loại biển:", e);
+          }
+        }
+
+        traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+        const html = `
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            ${hinh}
+            <div>
+              <h4>⚠️ <strong>Biển báo ${data.MaBien}</strong></h4>
+              <p>📘 <strong>Tên:</strong> ${data.TenBien}</p>
+              <p>📝 <strong>Mô tả:</strong> ${data.MoTa}</p>
+              <p>💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}</p>
+              <p>📌 <strong>Loại biển:</strong> ${tenLoai}</p>
+            </div>
+          </div>`;
+
+        responseContainer.innerHTML = html;
+        speakText(traLoi);
+      } else if (mode === "ai") {  // Chế độ Trợ lý AI
+        // Logic cho AI trả lời sẽ ở đây, ví dụ với OpenAI API...
+        const aiResponse = await getAiResponse(rawText);
+        responseContainer.innerHTML = `<p>${aiResponse}</p>`;
+        speakText(aiResponse);
       }
-
-      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-      const html = `
-        <div style="display:flex; gap:20px; align-items:flex-start;">
-          ${hinh}
-          <div>
-            <h4>⚠️ <strong>Biển báo ${data.MaBien}</strong></h4>
-            <p>📘 <strong>Tên:</strong> ${data.TenBien}</p>
-            <p>📝 <strong>Mô tả:</strong> ${data.MoTa}</p>
-            <p>💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}</p>
-            <p>📌 <strong>Loại biển:</strong> ${tenLoai}</p>
-          </div>
-        </div>`;
-
-      responseContainer.innerHTML = html;
-      speakText(traLoi);
 
       if (maND) {
         await db.collection("ChatLog").add({
@@ -110,6 +117,22 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("❌ Lỗi tìm kiếm:", err);
       responseContainer.innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
     }
+  }
+
+  // Hàm lấy dữ liệu từ AI (ví dụ từ OpenAI)
+  async function getAiResponse(query) {
+    // Gọi OpenAI API tại đây
+    const response = await fetch("YOUR_API_ENDPOINT", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer YOUR_API_KEY`
+      },
+      body: JSON.stringify({ prompt: query, max_tokens: 50 })
+    });
+
+    const data = await response.json();
+    return data.choices[0].text.trim();
   }
 
   function speakText(text) {
@@ -129,40 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
     recognition.start();
-  }
-
-  async function generateAIResponse() {
-    const inputText = inputField.value.trim();
-    if (!inputText) return alert("⚠️ Vui lòng nhập câu hỏi cho AI!");
-
-    const OPENAI_API_KEY = "<Your OpenAI API Key>";
-    const responseContainerAI = document.getElementById("chatbotResponse");
-
-    responseContainerAI.innerHTML = "⏳ AI đang trả lời...";
-
-    try {
-      const response = await fetch('https://api.openai.com/v1/completions', {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: inputText }],
-          temperature: 0.7
-        })
-      });
-
-      const data = await response.json();
-      const aiAnswer = data.choices[0]?.message?.content || "Không có phần hồi đáp từ AI.";
-
-      responseContainerAI.innerHTML = `<strong>Trợ lý AI:</strong> ${aiAnswer}`;
-      speakText(aiAnswer);
-    } catch (err) {
-      console.error("❌ Lỗi với AI:", err);
-      responseContainerAI.innerHTML = "❌ Lỗi kết nối AI!";
-    }
   }
 
   async function hienThiLichSuChat() {
@@ -200,7 +189,16 @@ document.addEventListener("DOMContentLoaded", () => {
       container.innerHTML = "❌ Không thể tải lịch sử!";
     }
   }
+
+  // Chế độ mặc định
+  let mode = "bienbao";  // Học biển báo mặc định
+  function switchToAiMode() {
+    mode = "ai";  // Chuyển sang chế độ trợ lý AI
+    sendQuestion();  // Xử lý câu hỏi AI
+  }
+
+  function switchToBienBaoMode() {
+    mode = "bienbao";  // Quay lại chế độ học biển báo
+    sendQuestion();  // Xử lý câu hỏi biển báo
+  }
 });
-
-
-   
