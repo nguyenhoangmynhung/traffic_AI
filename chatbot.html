@@ -18,25 +18,9 @@
       color: white;
       border-radius: 10px;
     }
-    img.traffic-sign {
-      max-width: 220px;
-      height: auto;
-      border: 2px solid white;
-      border-radius: 8px;
-      margin: 15px auto;
-      display: block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
-    input {
-      width: 70%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
+    
+    .button-group button {
+      width: 200px;
       padding: 10px;
       font-size: 16px;
       cursor: pointer;
@@ -45,32 +29,21 @@
       margin: 5px;
     }
 
-    #sendButton {
+    #sendButton, #voiceButton {
       background-color: orange;
       color: white;
     }
 
-    #sendButton:hover {
+    #sendButton:hover, #voiceButton:hover {
       background-color: darkorange;
     }
 
     #voiceButton {
       background-color: #ff4081;
-      color: white;
     }
 
     #voiceButton:hover {
       background-color: #d81b60;
-    }
-
-    .back-btn {
-      margin-top: 20px;
-      background-color: #ff4500;
-      color: white;
-    }
-
-    .back-btn:hover {
-      background-color: #d73814;
     }
 
     .info-box {
@@ -87,23 +60,36 @@
       color: #ffeb3b;
     }
 
-    .mode-button {
-      background-color: #4CAF50;
-      color: white;
-      margin: 10px;
+    input {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
       border-radius: 5px;
     }
 
-    .mode-button:hover {
-      background-color: #45a049;
+    #viewHistoryBtn {
+      background-color: #ff4500;
+      color: white;
     }
 
-    #aiButton {
-      background-color: #ff9800;
+    #viewHistoryBtn:hover {
+      background-color: #d73814;
     }
 
-    #aiButton:hover {
-      background-color: #e68900;
+    .back-btn {
+      margin-top: 20px;
+      background-color: #ff4500;
+      color: white;
+    }
+
+    .back-btn:hover {
+      background-color: #d73814;
+    }
+
+    .chat-header {
+      font-size: 1.5em;
+      margin-bottom: 20px;
     }
   </style>
 
@@ -116,16 +102,25 @@
 
   <h2>💬 Học với Chatbot AI</h2>
 
-  <!-- Chuyển chế độ học biển báo và trợ lý AI -->
-  <button id="bienbaoButton" class="mode-button">Học biển báo</button>
-  <button id="aiButton" class="mode-button">Trợ lý AI</button>
+  <div class="button-group">
+    <button id="hocBienBaoBtn" class="active">Học biển báo</button>
+    <button id="troLyAiBtn">Trợ lý AI</button>
+  </div>
 
-  <div class="chat-container" id="chatContainer">
-    <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
-    <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
-    <button id="sendButton">Gửi</button>
-    <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-    <div id="chatbotResponse" class="info-box"></div>
+  <div class="chat-container">
+    <div id="hocBienBao">
+      <h3 class="chat-header">Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
+      <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
+      <button id="sendButton">Gửi</button>
+      <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
+    </div>
+
+    <div id="troLyAi" style="display: none;">
+      <h3 class="chat-header">Nhập câu hỏi cho Trợ lý AI:</h3>
+      <input type="text" id="aiQuestionInput" placeholder="Nhập câu hỏi cho AI..." />
+      <button id="sendButtonAi">Gửi</button>
+      <button id="voiceButtonAi">🎤 Hỏi bằng giọng nói</button>
+    </div>
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
@@ -162,50 +157,24 @@
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
 
-    // Đặt chế độ mặc định là Học biển báo
-    let mode = "bienbao";
+    const hocBienBaoBtn = document.getElementById('hocBienBaoBtn');
+    const troLyAiBtn = document.getElementById('troLyAiBtn');
+    const hocBienBaoDiv = document.getElementById('hocBienBao');
+    const troLyAiDiv = document.getElementById('troLyAi');
 
-    // Chuyển giữa các chế độ học biển báo và trợ lý AI
-    document.getElementById("bienbaoButton").addEventListener("click", () => {
-      mode = "bienbao";
-      switchMode();
+    hocBienBaoBtn.addEventListener('click', () => {
+      hocBienBaoDiv.style.display = 'block';
+      troLyAiDiv.style.display = 'none';
+      hocBienBaoBtn.classList.add('active');
+      troLyAiBtn.classList.remove('active');
     });
 
-    document.getElementById("aiButton").addEventListener("click", () => {
-      mode = "ai";
-      switchMode();
+    troLyAiBtn.addEventListener('click', () => {
+      troLyAiDiv.style.display = 'block';
+      hocBienBaoDiv.style.display = 'none';
+      troLyAiBtn.classList.add('active');
+      hocBienBaoBtn.classList.remove('active');
     });
-
-    // Hàm chuyển chế độ
-    function switchMode() {
-      const chatContainer = document.getElementById("chatContainer");
-      const modeButton = document.getElementById("modeButton");
-
-      if (mode === "bienbao") {
-        document.getElementById("aiButton").style.backgroundColor = "#ff9800";
-        document.getElementById("bienbaoButton").style.backgroundColor = "#4CAF50";
-
-        chatContainer.innerHTML = `
-          <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
-          <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
-          <button id="sendButton">Gửi</button>
-          <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-          <div id="chatbotResponse" class="info-box"></div>
-        `;
-      } else {
-        document.getElementById("bienbaoButton").style.backgroundColor = "#4CAF50";
-        document.getElementById("aiButton").style.backgroundColor = "#e68900";
-
-        chatContainer.innerHTML = `
-          <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
-          <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
-          <button id="sendButtonAI">Gửi</button>
-          <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
-          <div id="chatbotResponseAI" class="info-box"></div>
-        `;
-      }
-    }
-
   </script>
 </body>
 </html>
