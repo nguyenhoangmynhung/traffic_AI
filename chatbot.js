@@ -29,38 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
 
-  // Sự kiện cho nút chuyển chế độ "Trợ lý AI"
-  document.getElementById("aiButton")?.addEventListener("click", () => {
-    mode = "ai"; // Chuyển sang chế độ trợ lý AI
-    switchMode(); // Chuyển giao diện
-  });
-
-  // Chức năng chuyển chế độ
-  let mode = "bienbao"; // Mặc định là chế độ Học biển báo
-
-  // Hàm chuyển chế độ
-  function switchMode() {
-    const chatContainer = document.getElementById("chatContainer");
-    if (mode === "bienbao") {
-      chatContainer.innerHTML = `
-        <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
-        <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
-        <button id="sendButton">Gửi</button>
-        <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-        <div id="chatbotResponse" class="info-box"></div>
-      `;
-    } else if (mode === "ai") {
-      chatContainer.innerHTML = `
-        <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
-        <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
-        <button id="sendButtonAI">Gửi</button>
-        <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
-        <div id="chatbotResponseAI" class="info-box"></div>
-      `;
-    }
-  }
-
-  // Hàm gửi câu hỏi cho biển báo
   async function sendQuestion() {
     const rawText = inputField.value.trim();
     if (!rawText) return alert("⚠️ Vui lòng nhập mã hoặc tên biển báo!");
@@ -94,8 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = snapshot.docs[0].data();
-      const hinh = data.HinhAnh ? 
-        `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" alt="Biển báo" style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />` 
+      const hinh = data.HinhAnh ?
+        `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" 
+              alt="Biển báo" 
+              style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
         : "";
 
       let tenLoai = "Chưa xác định";
@@ -138,7 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Hàm nhận diện giọng nói
+  function speakText(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "vi-VN";
+    speech.rate = 0.9;
+    window.speechSynthesis.speak(speech);
+  }
+
   function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "vi-VN";
@@ -151,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.start();
   }
 
-  // Hiển thị lịch sử chat
   async function hienThiLichSuChat() {
     const container = document.getElementById("chatHistoryContainer");
     const maND = localStorage.getItem("maND");
@@ -188,3 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+
+   
