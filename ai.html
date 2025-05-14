@@ -1,16 +1,15 @@
-<!-- ai.html -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Trợ Lý AI</title>
+  <meta charset="UTF-8" />
+  <title> Trợ lý AI</title>
   <style>
-    /* Style cho giao diện Trợ lý AI */
     body {
-      font-family: Arial, sans-serif;
       text-align: center;
+      font-family: Arial, sans-serif;
       background-color: #f0f0f0;
     }
+
     .chat-container {
       width: 500px;
       margin: auto;
@@ -19,6 +18,16 @@
       color: white;
       border-radius: 10px;
     }
+    img.traffic-sign {
+      max-width: 220px;
+      height: auto;
+      border: 2px solid white;
+      border-radius: 8px;
+      margin: 15px auto;
+      display: block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
     input {
       width: 70%;
       padding: 10px;
@@ -26,6 +35,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
     button {
       padding: 10px;
       font-size: 16px;
@@ -34,32 +44,100 @@
       border-radius: 5px;
       margin: 5px;
     }
+
     #sendButton {
       background-color: orange;
       color: white;
     }
+
     #sendButton:hover {
       background-color: darkorange;
     }
+
     #voiceButton {
       background-color: #ff4081;
       color: white;
     }
+
     #voiceButton:hover {
       background-color: #d81b60;
     }
+
+    .back-btn {
+      margin-top: 20px;
+      background-color: #ff4500;
+      color: white;
+    }
+
+    .back-btn:hover {
+      background-color: #d73814;
+    }
+
+    .info-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #ffffff22;
+      color: white;
+      font-size: 16px;
+      text-align: left;
+    }
+
+    .info-box strong {
+      color: #ffeb3b;
+    }
   </style>
+
+  <!-- ✅ Firebase CDN compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <h2>Trợ Lý AI</h2>
+  <div id="userPanel" style="text-align: right; margin: 10px 20px;"></div>
+
+  <h2>💬 Học với Trợ lý AI</h2>
+
   <div class="chat-container">
-    <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
-    <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
-    <button id="sendButtonAI">Gửi</button>
-    <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
-    <div id="chatbotResponseAI" class="info-box"></div>
+    <h3>Nhập hoặc nói câu hỏi với trợ lý AI:</h3>
+    <input type="text" id="questionInput" placeholder="Nhập câu hỏi..." />
+    <button id="sendButton">Gửi</button>
+    <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
+    <div id="chatbotResponse" class="info-box"></div>
   </div>
 
-  <script src="chatbotAI.js"></script>
+  <button id="viewHistoryBtn">📜 Xem lịch sử</button>
+  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
+
+  <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
+
+  <!-- ✅ Gọi logic sau khi DOM và Firebase đã sẵn -->
+  <script src="chatbot.js"></script>
+
+  <script>
+    const tenDangNhap = localStorage.getItem("tenDangNhap");
+    const userPanel = document.getElementById("userPanel");
+
+    if (tenDangNhap) {
+      userPanel.innerHTML = `
+        👤 Xin chào, <strong>${tenDangNhap}</strong> |
+        <button onclick="dangXuat()">🚪 Đăng xuất</button>
+      `;
+    } else {
+      userPanel.innerHTML = `
+        <a href="dangnhap.html" onclick="luuTrangTruoc()">🔐 Đăng nhập</a> |
+        <a href="dangky.html" onclick="luuTrangTruoc()">📝 Đăng ký</a>
+      `;
+    }
+
+    function dangXuat() {
+      localStorage.removeItem("maND");
+      localStorage.removeItem("tenDangNhap");
+      location.reload();
+    }
+
+    function luuTrangTruoc() {
+      localStorage.setItem("redirectAfterLogin", "ai.html");
+    }
+  </script>
 </body>
 </html>
