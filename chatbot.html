@@ -5,110 +5,101 @@
   <title>Học với Chatbot AI</title>
   <style>
     body {
-      text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
+      text-align: center;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     .chat-container {
-      width: 500px;
-      margin: auto;
+      width: 600px;
       background-color: #1e5679;
       padding: 20px;
       color: white;
       border-radius: 10px;
+      text-align: center;
     }
-    img.traffic-sign {
-      max-width: 220px;
-      height: auto;
-      border: 2px solid white;
-      border-radius: 8px;
-      margin: 15px auto;
-      display: block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+    .chat-container h3 {
+      margin-bottom: 15px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 450px;
     }
 
     input {
-      width: 70%;
-      padding: 10px;
-      font-size: 16px;
       border: 1px solid #ccc;
-      border-radius: 5px;
     }
 
     button {
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
+      background-color: #ff5722;
+      color: white;
       border: none;
-      border-radius: 5px;
-      margin: 5px;
+      cursor: pointer;
     }
 
-    #sendButton {
-      background-color: orange;
-      color: white;
+    button:hover {
+      background-color: #e64a19;
     }
 
-    #sendButton:hover {
-      background-color: darkorange;
-    }
-
-    #voiceButton {
-      background-color: #ff4081;
-      color: white;
-    }
-
-    #voiceButton:hover {
-      background-color: #d81b60;
-    }
-
-    .back-btn {
-      margin-top: 20px;
-      background-color: #ff4500;
-      color: white;
-    }
-
-    .back-btn:hover {
-      background-color: #d73814;
-    }
-
-    .info-box {
-      margin-top: 20px;
-      padding: 15px;
+    img.traffic-sign {
+      max-width: 250px;
+      height: auto;
       border-radius: 8px;
-      background-color: #ffffff22;
-      color: white;
-      font-size: 16px;
+      margin: 10px 0;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    #chatbotResponse {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    #chatHistoryContainer {
+      margin-top: 20px;
+      max-width: 600px;
       text-align: left;
     }
 
-    .info-box strong {
-      color: #ffeb3b;
-    }
-
-    .mode-switch {
-      margin-top: 20px;
-    }
-
-    .mode-switch button {
-      background-color: #008CBA;
+    #backButton {
+      background-color: #ff5722;
       color: white;
-      border-radius: 5px;
       padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
       cursor: pointer;
-      margin: 5px;
     }
 
-    .mode-switch button:hover {
-      background-color: #005f73;
+    #backButton:hover {
+      background-color: #e64a19;
     }
 
-    .chat-mode {
-      display: none;
+    #viewHistoryBtn {
+      background-color: #ff5722;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    #viewHistoryBtn:hover {
+      background-color: #e64a19;
     }
   </style>
-
   <!-- ✅ Firebase CDN compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -118,154 +109,46 @@
 
   <h2>💬 Học với Chatbot AI</h2>
 
-  <div class="mode-switch">
-    <button onclick="setMode('traffic')">🚦 Biển báo</button>
-    <button onclick="setMode('gpt')">🤖 Tạo sinh AI</button>
-  </div>
-
-  <div id="traffic-chat" class="chat-mode">
+  <div class="chat-container">
     <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
     <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
     <button id="sendButton">Gửi</button>
     <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-    <div id="chatbotResponse" class="info-box"></div>
-  </div>
-
-  <div id="gpt-chat" class="chat-mode">
-    <h3>Trò chuyện với AI:</h3>
-    <input type="text" id="gptInput" placeholder="Bạn muốn hỏi gì?" />
-    <button onclick="sendToGPT()">Gửi</button>
-    <div id="gptResponse" class="info-box"></div>
+    <div id="chatbotResponse"></div>
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
+  <div id="chatHistoryContainer"></div>
 
-  <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
+  <button id="backButton">🏠 Quay về Trang Chính</button>
 
   <!-- ✅ Gọi logic sau khi DOM và Firebase đã sẵn -->
   <script src="chatbot.js"></script>
 
   <script>
-    // Default mode is traffic
-    let currentMode = "traffic";
+    const tenDangNhap = localStorage.getItem("tenDangNhap");
+    const userPanel = document.getElementById("userPanel");
 
-    function setMode(mode) {
-      currentMode = mode;
-      document.getElementById("traffic-chat").style.display = mode === "traffic" ? "block" : "none";
-      document.getElementById("gpt-chat").style.display = mode === "gpt" ? "block" : "none";
+    if (tenDangNhap) {
+      userPanel.innerHTML = `
+        👤 Xin chào, <strong>${tenDangNhap}</strong> |
+        <button onclick="dangXuat()">🚪 Đăng xuất</button>
+      `;
+    } else {
+      userPanel.innerHTML = `
+        <a href="dangnhap.html" onclick="luuTrangTruoc()">🔐 Đăng nhập</a> |
+        <a href="dangky.html" onclick="luuTrangTruoc()">📝 Đăng ký</a>
+      `;
     }
 
-    // Gửi yêu cầu tra cứu mã biển báo
-    async function sendQuestion() {
-      const ma = document.getElementById("questionInput").value.trim().toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
-      if (!ma) return alert("⚠️ Vui lòng nhập mã biển báo!");
-
-      document.getElementById("chatbotResponse").innerHTML = "⏳ Đang tìm kiếm thông tin...";
-
-      try {
-        const snapshot = await db.collection("BienBao").where("MaBien", "==", ma).limit(1).get();
-        const maND = localStorage.getItem("maND");
-        let traLoi = "";
-
-        if (snapshot.empty) {
-          traLoi = `Không tìm thấy mã biển báo ${ma}`;
-          document.getElementById("chatbotResponse").innerHTML = `❌ ${traLoi}`;
-          speakText(traLoi);
-        } else {
-          const data = snapshot.docs[0].data();
-          traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
-          const html = `
-            ⚠️ <strong>Biển báo ${data.MaBien}</strong><br>
-            📘 <strong>Tên:</strong> ${data.TenBien}<br>
-            📝 <strong>Mô tả:</strong> ${data.MoTa}<br>
-            💸 <strong>Mức phạt:</strong> ${data.MucPhat || 'Không có quy định'}<br>
-            📌 <strong>Loại biển:</strong> ${data.TenLoai || 'Chưa xác định'}<br>
-            <img class="traffic-sign" src="https://nguyenhoangmynhung.github.io/traffic_AI/${data.HinhAnh}" alt="Hình ảnh biển báo">
-          `;
-          document.getElementById("chatbotResponse").innerHTML = html;
-          speakText(traLoi);
-        }
-
-        if (maND) {
-          await db.collection("ChatLog").add({
-            MaND: maND,
-            CauHoi: ma,
-            TraLoi: traLoi,
-            ThoiGian: new Date().toISOString()
-          });
-        }
-
-      } catch (err) {
-        console.error("❌ Lỗi tìm kiếm:", err);
-        document.getElementById("chatbotResponse").innerHTML = "❌ Lỗi kết nối hoặc tìm kiếm!";
-      }
+    function dangXuat() {
+      localStorage.removeItem("maND");
+      localStorage.removeItem("tenDangNhap");
+      location.reload();
     }
 
-    function speakText(text) {
-      const speech = new SpeechSynthesisUtterance(text);
-      speech.lang = "vi-VN";
-      speech.rate = 0.9;
-      window.speechSynthesis.speak(speech);
-    }
-
-    async function sendToGPT() {
-      const prompt = document.getElementById("gptInput").value;
-      const gptResponseDiv = document.getElementById("gptResponse");
-      gptResponseDiv.innerHTML = "⏳ Đang tạo phản hồi...";
-
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer YOUR_OPENAI_API_KEY`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7
-        })
-      });
-
-      const data = await response.json();
-      const content = data?.choices?.[0]?.message?.content || "❌ Không có phản hồi.";
-      gptResponseDiv.innerHTML = content;
-    }
-
-    // Chỉnh sửa lịch sử hỏi đáp
-    async function hienThiLichSuChat() {
-      const container = document.getElementById("chatHistoryContainer");
-      const maND = localStorage.getItem("maND");
-      if (!maND) return container.innerHTML = "⚠️ Cần đăng nhập để xem lịch sử.";
-
-      try {
-        const snapshot = await db.collection("ChatLog")
-          .where("MaND", "==", maND)
-          .orderBy("ThoiGian", "desc")
-          .limit(10).get();
-
-        if (snapshot.empty) {
-          container.innerHTML = "📭 Chưa có lịch sử hỏi đáp.";
-          return;
-        }
-
-        let html = "<h3>📜 Lịch sử hỏi đáp</h3><ul>";
-        snapshot.forEach(doc => {
-          const log = doc.data();
-          html += `
-            <li style="margin-bottom: 10px;">
-              🕒 ${new Date(log.ThoiGian).toLocaleString()}<br>
-              ❓ <strong>Hỏi:</strong> ${log.CauHoi}<br>
-              💬 <strong>Đáp:</strong> ${log.TraLoi}
-            </li>`;
-        });
-        html += "</ul>";
-        container.innerHTML = html;
-
-      } catch (err) {
-        console.error("❌ Lỗi lịch sử:", err);
-        container.innerHTML = "❌ Không thể tải lịch sử!";
-      }
+    function luuTrangTruoc() {
+      localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
   </script>
 </body>
