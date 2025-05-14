@@ -28,36 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   backButton?.addEventListener("click", () => location.href = "index.html");
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
-  // Sự kiện cho nút chuyển chế độ "Trợ lý AI"
-  document.getElementById("aiButton")?.addEventListener("click", () => {
-    mode = "ai"; // Chuyển sang chế độ trợ lý AI
-    switchMode(); // Chuyển giao diện
-  });
-
-  // Chức năng chuyển chế độ
-  let mode = "bienbao"; // Mặc định là chế độ Học biển báo
-
-  // Hàm chuyển chế độ
-  function switchMode() {
-    const chatContainer = document.getElementById("chatContainer");
-    if (mode === "bienbao") {
-      chatContainer.innerHTML = `
-        <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
-        <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
-        <button id="sendButton">Gửi</button>
-        <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-        <div id="chatbotResponse" class="info-box"></div>
-      `;
-    } else if (mode === "ai") {
-      chatContainer.innerHTML = `
-        <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
-        <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
-        <button id="sendButtonAI">Gửi</button>
-        <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
-        <div id="chatbotResponseAI" class="info-box"></div>
-      `;
-    }
-  }
 
   async function sendQuestion() {
     const rawText = inputField.value.trim();
