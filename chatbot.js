@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const backButton = document.getElementById("backButton");
   const voiceButton = document.getElementById("voiceButton");
   const viewHistoryBtn = document.getElementById("viewHistoryBtn");
+  const aiButton = document.getElementById("aiButton"); // Nút trợ lý AI mới
 
   sendButton?.addEventListener("click", sendQuestion);
   inputField?.addEventListener("keypress", e => {
@@ -28,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
   backButton?.addEventListener("click", () => location.href = "index.html");
   voiceButton?.addEventListener("click", startListening);
   viewHistoryBtn?.addEventListener("click", hienThiLichSuChat);
+
+  // Nút trợ lý AI mới
+  aiButton?.addEventListener("click", generateAIResponse);
 
   async function sendQuestion() {
     const rawText = inputField.value.trim();
@@ -62,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = snapshot.docs[0].data();
-      const hinh = data.HinhAnh ?
+      const hinh = data.HinhAnh ? 
         `<img src="https://nguyenhoangmynhung.github.io/traffic_AI${data.HinhAnh}" 
               alt="Biển báo" 
               style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
@@ -125,6 +129,40 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     recognition.onerror = () => responseContainer.innerHTML = "❌ Lỗi nhận diện giọng nói!";
     recognition.start();
+  }
+
+  async function generateAIResponse() {
+    const inputText = inputField.value.trim();
+    if (!inputText) return alert("⚠️ Vui lòng nhập câu hỏi cho AI!");
+
+    const OPENAI_API_KEY = "<Your OpenAI API Key>";
+    const responseContainerAI = document.getElementById("chatbotResponse");
+
+    responseContainerAI.innerHTML = "⏳ AI đang trả lời...";
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: inputText }],
+          temperature: 0.7
+        })
+      });
+
+      const data = await response.json();
+      const aiAnswer = data.choices[0]?.message?.content || "Không có phần hồi đáp từ AI.";
+
+      responseContainerAI.innerHTML = `<strong>Trợ lý AI:</strong> ${aiAnswer}`;
+      speakText(aiAnswer);
+    } catch (err) {
+      console.error("❌ Lỗi với AI:", err);
+      responseContainerAI.innerHTML = "❌ Lỗi kết nối AI!";
+    }
   }
 
   async function hienThiLichSuChat() {
