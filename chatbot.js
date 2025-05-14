@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function sendQuestion() {
     const rawText = inputField.value.trim();
-    if (!rawText) return alert("⚠️ Vui lòng nhập mã hoặc tên biển báo!");
+    if (!rawText) return;
 
     responseContainer.innerHTML = "⏳ Đang tìm kiếm thông tin...";
     const queryText = rawText.toUpperCase().replace(/\s+/g, "").replace(/\./g, "");
