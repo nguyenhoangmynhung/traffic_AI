@@ -62,23 +62,7 @@
     #voiceButton:hover {
       background-color: #d81b60;
     }
-    #sendButtonAI {
-      background-color: orange;
-      color: white;
-    }
 
-    #sendButtonAI:hover {
-      background-color: darkorange;
-    }
-        /* Cập nhật màu cho nút "Hỏi bằng giọng nói" trong giao diện Trợ lý AI */
-    #voiceButtonAI {
-      background-color: #ff4081;
-      color: white;
-    }
-    
-    #voiceButtonAI:hover {
-      background-color: #d81b60;
-    }
     .back-btn {
       margin-top: 20px;
       background-color: #ff4500;
@@ -102,25 +86,6 @@
     .info-box strong {
       color: #ffeb3b;
     }
-
-    .mode-button {
-      background-color: #4CAF50;
-      color: white;
-      margin: 10px;
-      border-radius: 5px;
-    }
-
-    .mode-button:hover {
-      background-color: #45a049;
-    }
-
-    #aiButton {
-      background-color: #ff9800;
-    }
-
-    #aiButton:hover {
-      background-color: #e68900;
-    }
   </style>
 
   <!-- ✅ Firebase CDN compat -->
@@ -132,11 +97,7 @@
 
   <h2>💬 Học với Chatbot AI</h2>
 
-  <!-- Chuyển chế độ học biển báo và trợ lý AI -->
-  <button id="bienbaoButton" class="mode-button">Học biển báo</button>
-  <button id="aiButton" class="mode-button">Trợ lý AI</button>
-
-  <div class="chat-container" id="chatContainer">
+  <div class="chat-container">
     <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
     <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
     <button id="sendButton">Gửi</button>
@@ -177,51 +138,6 @@
     function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
-
-    // Đặt chế độ mặc định là Học biển báo
-    let mode = "bienbao";
-
-    // Chuyển giữa các chế độ học biển báo và trợ lý AI
-    document.getElementById("bienbaoButton").addEventListener("click", () => {
-      mode = "bienbao";
-      switchMode();
-    });
-
-    document.getElementById("aiButton").addEventListener("click", () => {
-      mode = "ai";
-      switchMode();
-    });
-
-    // Hàm chuyển chế độ
-    function switchMode() {
-      const chatContainer = document.getElementById("chatContainer");
-      const modeButton = document.getElementById("modeButton");
-
-      if (mode === "bienbao") {
-        document.getElementById("aiButton").style.backgroundColor = "#ff9800";
-        document.getElementById("bienbaoButton").style.backgroundColor = "#4CAF50";
-
-        chatContainer.innerHTML = `
-          <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
-          <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
-          <button id="sendButton">Gửi</button>
-          <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-          <div id="chatbotResponse" class="info-box"></div>
-        `;
-      } else {
-        document.getElementById("bienbaoButton").style.backgroundColor = "#4CAF50";
-        document.getElementById("aiButton").style.backgroundColor = "#e68900";
-
-        chatContainer.innerHTML = `
-          <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
-          <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
-          <button id="sendButtonAI">Gửi</button>
-          <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
-          <div id="chatbotResponseAI" class="info-box"></div>
-        `;
-      }
-    }
-
   </script>
 </body>
 </html>
