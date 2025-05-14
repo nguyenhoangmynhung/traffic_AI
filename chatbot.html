@@ -5,101 +5,100 @@
   <title>Học với Chatbot AI</title>
   <style>
     body {
+      text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
-      text-align: center;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
     }
 
     .chat-container {
-      width: 600px;
+      width: 500px;
+      margin: auto;
       background-color: #1e5679;
       padding: 20px;
       color: white;
       border-radius: 10px;
-      text-align: center;
     }
-
-    .chat-container h3 {
-      margin-bottom: 15px;
-    }
-
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      margin: 10px 0;
-      width: 80%;
-      max-width: 450px;
-    }
-
-    input {
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #ff5722;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #e64a19;
-    }
-
     img.traffic-sign {
-      max-width: 250px;
+      max-width: 220px;
       height: auto;
+      border: 2px solid white;
       border-radius: 8px;
-      margin: 10px 0;
+      margin: 15px auto;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
 
-    #chatbotResponse {
-      margin-top: 20px;
-      font-size: 18px;
+    input {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
-    #chatHistoryContainer {
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+    }
+
+    #sendButton {
+      background-color: orange;
+      color: white;
+    }
+
+    #sendButton:hover {
+      background-color: darkorange;
+    }
+
+    #voiceButton {
+      background-color: #ff4081;
+      color: white;
+    }
+
+    #voiceButton:hover {
+      background-color: #d81b60;
+    }
+
+    .back-btn {
       margin-top: 20px;
-      max-width: 600px;
+      background-color: #ff4500;
+      color: white;
+    }
+
+    .back-btn:hover {
+      background-color: #d73814;
+    }
+
+    .info-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #ffffff22;
+      color: white;
+      font-size: 16px;
       text-align: left;
     }
 
-    #backButton {
-      background-color: #ff5722;
+    .info-box strong {
+      color: #ffeb3b;
+    }
+
+    .mode-button {
+      background-color: #4CAF50;
       color: white;
-      padding: 10px;
+      margin: 10px;
       border-radius: 5px;
-      margin-top: 20px;
-      cursor: pointer;
     }
 
-    #backButton:hover {
-      background-color: #e64a19;
-    }
-
-    #viewHistoryBtn {
-      background-color: #ff5722;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    #viewHistoryBtn:hover {
-      background-color: #e64a19;
+    .mode-button:hover {
+      background-color: #45a049;
     }
   </style>
+
   <!-- ✅ Firebase CDN compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -109,18 +108,21 @@
 
   <h2>💬 Học với Chatbot AI</h2>
 
-  <div class="chat-container">
+  <!-- Chuyển chế độ học biển báo và trợ lý AI -->
+  <button id="modeBtn" class="mode-button">Học biển báo</button>
+
+  <div class="chat-container" id="chatContainer">
     <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
     <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
     <button id="sendButton">Gửi</button>
     <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
-    <div id="chatbotResponse"></div>
+    <div id="chatbotResponse" class="info-box"></div>
   </div>
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer"></div>
+  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
 
-  <button id="backButton">🏠 Quay về Trang Chính</button>
+  <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
   <!-- ✅ Gọi logic sau khi DOM và Firebase đã sẵn -->
   <script src="chatbot.js"></script>
@@ -150,6 +152,35 @@
     function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
+
+    // Thêm logic chuyển giữa chế độ "Học biển báo" và "Trợ lý AI"
+    let mode = "bienbao"; // "bienbao" for biển báo, "ai" for AI
+
+    const modeBtn = document.getElementById("modeBtn");
+
+    modeBtn.addEventListener("click", () => {
+      if (mode === "bienbao") {
+        mode = "ai";
+        modeBtn.textContent = "Trợ lý AI"; // Chuyển sang chế độ AI
+        document.getElementById("chatContainer").innerHTML = `
+          <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
+          <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
+          <button id="sendButtonAI">Gửi</button>
+          <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
+          <div id="chatbotResponseAI" class="info-box"></div>
+        `;
+      } else {
+        mode = "bienbao";
+        modeBtn.textContent = "Học biển báo"; // Chuyển về chế độ biển báo
+        document.getElementById("chatContainer").innerHTML = `
+          <h3>Nhập hoặc nói mã biển báo/ tên biển báo:</h3>
+          <input type="text" id="questionInput" placeholder="Nhập mã biển báo..." />
+          <button id="sendButton">Gửi</button>
+          <button id="voiceButton">🎤 Hỏi bằng giọng nói</button>
+          <div id="chatbotResponse" class="info-box"></div>
+        `;
+      }
+    });
   </script>
 </body>
 </html>
