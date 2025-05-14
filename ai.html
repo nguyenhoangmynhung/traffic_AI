@@ -1,0 +1,65 @@
+<!-- ai.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trợ Lý AI</title>
+  <style>
+    /* Style cho giao diện Trợ lý AI */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    .chat-container {
+      width: 500px;
+      margin: auto;
+      background-color: #1e5679;
+      padding: 20px;
+      color: white;
+      border-radius: 10px;
+    }
+    input {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+    }
+    #sendButton {
+      background-color: orange;
+      color: white;
+    }
+    #sendButton:hover {
+      background-color: darkorange;
+    }
+    #voiceButton {
+      background-color: #ff4081;
+      color: white;
+    }
+    #voiceButton:hover {
+      background-color: #d81b60;
+    }
+  </style>
+</head>
+<body>
+  <h2>Trợ Lý AI</h2>
+  <div class="chat-container">
+    <h3>Nhập câu hỏi cho Trợ lý AI:</h3>
+    <input type="text" id="questionInputAI" placeholder="Nhập câu hỏi cho AI..." />
+    <button id="sendButtonAI">Gửi</button>
+    <button id="voiceButtonAI">🎤 Hỏi bằng giọng nói</button>
+    <div id="chatbotResponseAI" class="info-box"></div>
+  </div>
+
+  <script src="chatbotAI.js"></script>
+</body>
+</html>
