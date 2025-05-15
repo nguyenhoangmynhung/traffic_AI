@@ -124,19 +124,25 @@
     <div id="chatbotResponse" class="info-box"></div>
   </div>
 
-  <button id="viewHistoryBtn">📜 Xem lịch sử</button>
-  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
+  <!-- Các nút trên cùng 1 hàng -->
+  <div style="max-width: 500px; margin: 20px auto; display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap;">
+    <button id="viewHistoryBtn" style="flex: 1; min-width: 120px; padding: 10px; font-size: 16px; border-radius: 6px; background-color: #f0ad4e; color: white; border: none; cursor: pointer;">
+      📜 Xem lịch sử
+    </button>
 
-  <!-- Nút Trợ lý AI mở liên kết ở tab mới -->
-  <div class="partyrock-container">
     <a href="https://partyrock.aws/u/mynhung/t3oIwgZWb/Tro-ly-AI-giao-thong" 
        target="_blank" 
-       rel="noopener noreferrer">
+       rel="noopener noreferrer"
+       style="flex: 1; min-width: 120px; background-color: #28a745; color: white; padding: 10px; border-radius: 6px; text-decoration: none; text-align: center; font-size: 16px; display: inline-block; line-height: 1.5;">
       🤖 Trợ lý AI
     </a>
+
+    <button id="backButton" style="flex: 1; min-width: 120px; padding: 10px; font-size: 16px; border-radius: 6px; background-color: #ff4500; color: white; border: none; cursor: pointer;">
+      🏠 Quay về Trang Chính
+    </button>
   </div>
 
-  <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
+  <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
 
   <!-- Gọi logic sau khi DOM và Firebase đã sẵn -->
   <script src="chatbot.js"></script>
