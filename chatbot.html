@@ -18,6 +18,7 @@
       color: white;
       border-radius: 10px;
     }
+
     img.traffic-sign {
       max-width: 220px;
       height: auto;
@@ -86,6 +87,23 @@
     .info-box strong {
       color: #ffeb3b;
     }
+
+    /* ✅ Style mới cho Trợ lý AI (PartyRock) */
+    .partyrock-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    #partyrockFrame {
+      width: 500px;
+      height: 600px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      display: none;
+    }
   </style>
 
   <!-- ✅ Firebase CDN compat -->
@@ -107,6 +125,14 @@
 
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
   <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
+
+  <!-- ✅ Nút và iframe Trợ lý AI -->
+  <div class="partyrock-container">
+    <button id="togglePartyRockBtn" style="background-color: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">
+      🤖 Trợ lý AI
+    </button>
+    <iframe id="partyrockFrame" src="https://partyrock.aws/u/mynhung/t3oIwgZWb/Tro-ly-AI-giao-thong"></iframe>
+  </div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
@@ -138,6 +164,20 @@
     function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
+
+    // ✅ Xử lý hiển thị ẩn/hiện PartyRock
+    const partyrockBtn = document.getElementById("togglePartyRockBtn");
+    const partyrockFrame = document.getElementById("partyrockFrame");
+
+    partyrockBtn.addEventListener("click", () => {
+      if (partyrockFrame.style.display === "none") {
+        partyrockFrame.style.display = "block";
+        partyrockBtn.textContent = "❌ Ẩn Trợ lý AI";
+      } else {
+        partyrockFrame.style.display = "none";
+        partyrockBtn.textContent = "🤖 Trợ lý AI";
+      }
+    });
   </script>
 </body>
 </html>
