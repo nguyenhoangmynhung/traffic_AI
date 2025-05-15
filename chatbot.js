@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let tenLoai = "Chưa xác định";
       if (data.MaLoai) {
         try {
-          const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
+          const loaiSnap = await db.collection("LoaiBienBao").doc(data.MaLoai).get();
           if (loaiSnap.exists) tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
         } catch (e) {
           console.warn("Không lấy được tên loại biển:", e);
