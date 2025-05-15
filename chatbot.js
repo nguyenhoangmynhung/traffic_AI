@@ -107,11 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function speakText(text) {
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "vi-VN";
-    speech.rate = 0.9;
-    window.speechSynthesis.speak(speech);
-  }
+  window.speechSynthesis.cancel(); // Dừng giọng cũ nếu còn đang chạy
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "vi-VN";
+  speech.rate = 0.9;
+  window.speechSynthesis.speak(speech);
+}
 
   function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
