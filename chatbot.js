@@ -68,15 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
               style="max-width:120px; max-height:120px; display:block; margin-bottom:8px;" />`
         : "";
 
-      let tenLoai = "Chưa xác định";
-      if (data.MaLoai) {
-        try {
-          const loaiSnap = await db.collection("LoaiBien").doc(data.MaLoai).get();
-          if (loaiSnap.exists) tenLoai = loaiSnap.data().TenLoai || "Chưa xác định";
-        } catch (e) {
-          console.warn("Không lấy được tên loại biển:", e);
-        }
+      let tenLoai = "Không rõ";
+      try {
+        const loaiSnap = await db.collection("LoaiBienBao").doc(data.MaLoai).get();
+        tenLoai = loaiSnap.exists ? loaiSnap.data().TenLoai : "Không rõ";
+      } catch (e) {
+        console.warn("Không lấy được loại biển:", e);
       }
+    }
 
       traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
       const html = `
