@@ -79,7 +79,12 @@ function playAudio(text) {
   msg.lang = "vi-VN";
   window.speechSynthesis.speak(msg);
 }
-
+function speakText(text) {
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "vi-VN";
+  speech.rate = 0.9; // Nói chậm lại cho dễ nghe
+  window.speechSynthesis.speak(speech);
+}
 async function hienThiThongTin(ma, mode) {
   const infoBox = document.getElementById(`info${mode}`);
   infoBox.style.display = "block";
