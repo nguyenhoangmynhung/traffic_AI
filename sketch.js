@@ -109,6 +109,8 @@ async function hienThiThongTin(ma, mode) {
       <p><strong>Mức phạt:</strong> ${bien.MucPhat}</p>
       <p><strong>Loại biển:</strong> ${tenLoai}</p>
     `;
+    const thongTinNoi = `Tên biển: ${bien.TenBien}. Mô tả: ${bien.MoTa}. Mức phạt: ${bien.MucPhat}. Loại biển: ${tenLoai}.`;
+speakText(thongTinNoi);
   } catch (err) {
     infoBox.innerHTML = `<p style="color:red;">❌ Lỗi kết nối Firestore</p>`;
     console.error(err);
