@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("Không lấy được loại biển:", e);
       }
     
-      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}`;
+      traLoi = `${data.TenBien}. ${data.MoTa}. Mức phạt: ${data.MucPhat || 'không có quy định.'}. Loại biển: ${tenLoai}.`;
       const html = `
         <div style="display:flex; gap:20px; align-items:flex-start;">
           ${hinh}
