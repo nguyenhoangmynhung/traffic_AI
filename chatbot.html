@@ -88,25 +88,27 @@
       color: #ffeb3b;
     }
 
-    /* ✅ Style mới cho Trợ lý AI (PartyRock) */
+    /* Style cho phần Trợ lý AI */
     .partyrock-container {
-      display: flex;
-      justify-content: center;
       margin-top: 30px;
-      gap: 20px;
-      flex-wrap: wrap;
     }
 
-    #partyrockFrame {
-      width: 500px;
-      height: 600px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      display: none;
+    .partyrock-container a button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .partyrock-container a button:hover {
+      background-color: #218838;
     }
   </style>
 
-  <!-- ✅ Firebase CDN compat -->
+  <!-- Firebase CDN compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
@@ -126,21 +128,16 @@
   <button id="viewHistoryBtn">📜 Xem lịch sử</button>
   <div id="chatHistoryContainer" style="max-width: 500px; margin: auto; text-align: left; padding: 10px;"></div>
 
-  <!-- ✅ Nút và iframe Trợ lý AI -->
+  <!-- Nút Trợ lý AI mở liên kết ở tab mới -->
   <div class="partyrock-container">
-    <button id="togglePartyRockBtn" style="background-color: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">
-      🤖 Trợ lý AI
-    </button>
-    <a href="https://partyrock.aws/u/mynhung/t3olwgZWb/Tro-ly-AI-giao-thong" target="_blank" id="partyrockLink">
-  <button style="background-color: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">
-    🤖 Trợ lý AI
-  </button>
-</a>
+    <a href="https://partyrock.aws/u/mynhung/t3olwgZWb/Tro-ly-AI-giao-thong" target="_blank" rel="noopener noreferrer">
+      <button>🤖 Trợ lý AI</button>
+    </a>
   </div>
 
   <button id="backButton" class="back-btn">🏠 Quay về Trang Chính</button>
 
-  <!-- ✅ Gọi logic sau khi DOM và Firebase đã sẵn -->
+  <!-- Gọi logic sau khi DOM và Firebase đã sẵn -->
   <script src="chatbot.js"></script>
 
   <script>
@@ -168,20 +165,6 @@
     function luuTrangTruoc() {
       localStorage.setItem("redirectAfterLogin", "chatbot.html");
     }
-
-    // ✅ Xử lý hiển thị ẩn/hiện PartyRock
-    const partyrockBtn = document.getElementById("togglePartyRockBtn");
-    const partyrockFrame = document.getElementById("partyrockFrame");
-
-    partyrockBtn.addEventListener("click", () => {
-      if (partyrockFrame.style.display === "none") {
-        partyrockFrame.style.display = "block";
-        partyrockBtn.textContent = "❌ Ẩn Trợ lý AI";
-      } else {
-        partyrockFrame.style.display = "none";
-        partyrockBtn.textContent = "🤖 Trợ lý AI";
-      }
-    });
   </script>
 </body>
 </html>
