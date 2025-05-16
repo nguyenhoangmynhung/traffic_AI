@@ -115,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
   function startListening() {
+    responseContainer.innerHTML = "🎙️ Đang nghe, hãy nói mã hoặc tên biển báo...";
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "vi-VN";
     recognition.onresult = (event) => {
