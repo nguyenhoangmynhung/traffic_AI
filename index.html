@@ -142,7 +142,6 @@
 
   <div class="action-buttons">
     <button id="chatbotButton" onclick="goToChatbot()">💬 Học với Chatbot</button>
-    <button id="aiButton" onclick="goToAI()">🤖 Trợ lý AI</button>
     <button id="quizButton">📖 Chơi trắc nghiệm biển báo</button>
   </div>
 
@@ -151,9 +150,6 @@
     function goToChatbot() {
       window.location.href = "chatbot.html";
     }
-    function goToAI() {
-      window.location.href = 'ai.html'; // Điều hướng đến ai.html (trang trợ lý AI)
-    }
     document.getElementById("quizButton").addEventListener("click", function () {
       window.location.href = "quiz.html";
     });
@@ -161,5 +157,4 @@
   <script src="sketch.js"></script>
 </body>
 </html>
-
 
