@@ -122,7 +122,7 @@ async function showResult() {
     </div>`;
   });
   resultHTML += '</div>';
-  quizContainer.innerHTML = resultHTML + `<button onclick="startQuiz()">🔁 Làm lại</button><br><br><button onclick="location.href='index.html'">🏠 Quay về Trang Chính</button><div id="lichSuContainer" style="margin-top: 20px; text-align: left"></div>`;
+  quizContainer.innerHTML = resultHTML + `<div id="lichSuContainer" style="margin-top: 20px; text-align: left"></div>`;
 }
 
 function shuffleArray(array) {
