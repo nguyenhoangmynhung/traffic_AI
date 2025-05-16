@@ -47,32 +47,19 @@
       font-size: 18px;
     }
 
-    #startQuiz,
-    #backButton {
+    #startQuiz {
       margin-top: 20px;
       padding: 12px 20px;
       font-size: 16px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-
-    #startQuiz {
       background-color: green;
       color: white;
     }
 
     #startQuiz:hover {
       background-color: darkgreen;
-    }
-
-    #backButton {
-      background-color: red;
-      color: white;
-    }
-
-    #backButton:hover {
-      background-color: darkred;
     }
 
     #feedback {
@@ -92,9 +79,46 @@
     <button id="startQuiz">📖 Bắt đầu trắc nghiệm</button>
   </div>
 
-  <button id="backButton">🏠 Quay về Trang Chính</button>
+  <!-- Nút bọc trong div dùng flex để nằm trên cùng 1 dòng -->
+  <div style="max-width: 600px; margin: 20px auto; display: flex; gap: 12px; flex-wrap: nowrap; box-sizing: border-box;">
+    <button id="backButton" style="
+      flex: 1 1 0;
+      padding: 12px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      background-color: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    ">
+      🏠 Quay về Trang Chính
+    </button>
+
+    <button onclick="hienThiLichSu()" style="
+      flex: 1 1 0;
+      padding: 12px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      background-color: #555;
+      color: white;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    ">
+      📜 Xem lịch sử làm bài
+    </button>
+  </div>
+
   <div id="lichSuContainer" style="margin-top: 20px;"></div>
-  <button onclick="hienThiLichSu()">📜 Xem lịch sử làm bài</button>
 
   <!-- Firebase compat CDN -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
